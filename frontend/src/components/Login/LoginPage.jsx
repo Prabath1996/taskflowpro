@@ -7,7 +7,7 @@ export default function LoginPage() {
   return (
     <Box
       sx={{
-    width: "100vw",
+    width: "auto",
     height: "100vh",
     backgroundImage: `url(${backgroundImage})`,
     backgroundSize: "cover",
@@ -25,11 +25,12 @@ export default function LoginPage() {
         </Typography>
       </Box>
 
-      <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center", alignItems: "center" }}>
+      <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "right", alignItems: "ceter" }}>
         <Paper
           elevation={6}
           sx={{
             padding: 4,
+            margin: 10,
             width: 320,
             backgroundColor: "rgba(0,0,0,0.6)",
             color: "white",
