@@ -1,5 +1,5 @@
 import React from "react";
-import { TextField, Button, Typography, Link, Box, Paper } from "@mui/material";
+import { TextField, Button, Typography, Link, Box, Paper, colors } from "@mui/material";
 import backgroundImage from "../../assets/images/background.jpeg";
 
 export default function LoginPage() {
@@ -17,13 +17,14 @@ export default function LoginPage() {
       }}
     >
      
-      <Box sx={{ backgroundColor: "#2c3550", padding: 2, color: "#fff" }}>
+      {/* <Box sx={{ backgroundColor: "#2c3550", padding: 2, color: "#fff" }}>
         <Typography variant="h6" sx={{ fontWeight: "bold" }}>
           <span style={{ color: "#54d2eb" }}>Task</span>
           <span style={{ color: "#f4e04d" }}>Flow</span>
           <span style={{ color: "#fff" }}> Pro</span>
         </Typography>
-      </Box>
+      </Box> */}
+    
 
       <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "right", alignItems: "ceter" }}>
         <Paper
