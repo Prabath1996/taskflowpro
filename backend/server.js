@@ -6,6 +6,8 @@ const userRoutes = require('./routes/user');
 const customerRoutes = require('./routes/customer');
 const employeeRoutes = require('./routes/employee');
 const warrantyRoutes = require('./routes/warranty');
+const repairRoutes = require('./routes/repair');
+const taskRoutes = require('./routes/task');
 const PORT = 5000;
 const app = express();
 
@@ -31,10 +33,12 @@ connection.once("open", function() {
 
 
 // Routes
-app.use('/api/user', userRoutes);
-app.use('/api/customer', customerRoutes);
-app.use('/api/employee', employeeRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/customers', customerRoutes);
+app.use('/api/employees', employeeRoutes);
 app.use('/api/warranty', warrantyRoutes);
+app.use('/api/repairs', repairRoutes);
+app.use('/api/tasks', taskRoutes);
 
 
 // app.get("/",(req,res)=> 
