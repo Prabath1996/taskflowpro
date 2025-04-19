@@ -39,6 +39,6 @@ const WarrantySchema = new Schema({
   status: {
     type: String,
   }
-});
+},{collection: 'Warranty'});
 
 module.exports = mongoose.model('Warranty', WarrantySchema);

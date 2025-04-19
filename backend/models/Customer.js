@@ -18,6 +18,6 @@ const CustomerSchema = new Schema({
     type: String,
     required: true
   }
-});
+}, { collection: 'Customer' }); // Explicitly set the collection name
 
 module.exports = mongoose.model('Customer', CustomerSchema);
