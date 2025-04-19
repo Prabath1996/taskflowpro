@@ -2,10 +2,10 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const userRoutes = require('./routes/users');
-const customerRoutes = require('./routes/customers');
-const employeeRoutes = require('./routes/employees');
-const warrantyRoutes = require('./routes/warranties');
+const userRoutes = require('./routes/user');
+const customerRoutes = require('./routes/customer');
+const employeeRoutes = require('./routes/employee');
+const warrantyRoutes = require('./routes/warranty');
 const PORT = 5000;
 const app = express();
 
@@ -39,10 +39,10 @@ connection.once("open", function() {
 
 
 // Routes
-app.use('/api/users', userRoutes);
-app.use('/api/customers', customerRoutes);
-app.use('/api/employees', employeeRoutes);
-app.use('/api/warranties', warrantyRoutes);
+app.use('/api/user', userRoutes);
+app.use('/api/customer', customerRoutes);
+app.use('/api/employee', employeeRoutes);
+app.use('/api/warrantie', warrantyRoutes);
 
 
 // app.get("/",(req,res)=> 
