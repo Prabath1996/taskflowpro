@@ -42,7 +42,7 @@ connection.once("open", function() {
 app.use('/api/user', userRoutes);
 app.use('/api/customer', customerRoutes);
 app.use('/api/employee', employeeRoutes);
-app.use('/api/warrantie', warrantyRoutes);
+app.use('/api/warranty', warrantyRoutes);
 
 
 // app.get("/",(req,res)=> 
