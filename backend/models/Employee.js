@@ -18,6 +18,6 @@ const EmployeeSchema = new Schema({
     type: Date,
     required: true
   }
-});
+  },{collection: 'Employee'});
 
 module.exports = mongoose.model('Employee', EmployeeSchema);
