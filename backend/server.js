@@ -2,20 +2,18 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const userRoutes = require('../routes/user');
-const customerRoutes = require('../routes/customer');
-const employeeRoutes = require('../routes/employee');
-const warrantyRoutes = require('../routes/warranty');
-const repairRoutes = require('../routes/repair');
-const taskRoutes = require('../routes/task');
-const serverless = require('serverless-http');
+const userRoutes = require('./routes/user');
+const customerRoutes = require('./routes/customer');
+const employeeRoutes = require('./routes/employee');
+const warrantyRoutes = require('./routes/warranty');
+const repairRoutes = require('./routes/repair');
+const taskRoutes = require('./routes/task');
 const PORT = 5000;
 const app = express();
 
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
-
 
 
 //Connect to MongoDB
@@ -45,15 +43,6 @@ app.use('/api/tasks', taskRoutes);
 // app.get("/",(req,res)=> 
 //     res.send("Server is Running")
 // );
-
-//Vercel config
-app.get('/', (req, res) => {
-  res.send('Hello from Vercel!');
-});
-
-module.exports.handler = serverless(app);
-
-
 
 
 // Start Server
