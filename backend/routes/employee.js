@@ -17,7 +17,7 @@ router.post('/', async (req, res) => {
   try {
     const employee = new Employee(req.body);
     await employee.save();
-    res.status(201).json(employee);
+    res.status(201).json({message: 'Employee Created Successfully'});
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -39,7 +39,7 @@ router.put('/:id', async (req, res) => {
   try {
     const employee = await Employee.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!employee) return res.status(404).json({ error: 'Employee not found' });
-    res.json(employee);
+    res.json({ message:'Employee Updated successfully'});
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
