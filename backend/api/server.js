@@ -8,6 +8,7 @@ const employeeRoutes = require('../routes/employee');
 const warrantyRoutes = require('../routes/warranty');
 const repairRoutes = require('../routes/repair');
 const taskRoutes = require('../routes/task');
+const serverless = require('serverless-http');
 const PORT = 5000;
 const app = express();
 
@@ -44,6 +45,16 @@ app.use('/api/tasks', taskRoutes);
 // app.get("/",(req,res)=> 
 //     res.send("Server is Running")
 // );
+
+//Vercel config
+app.get('/', (req, res) => {
+  res.send('Hello from Vercel!');
+});
+
+module.exports.handler = serverless(app);
+
+
+
 
 // Start Server
 app.listen(PORT,() => 
