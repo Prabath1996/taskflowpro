@@ -40,9 +40,9 @@ app.use('/api/repairs', repairRoutes);
 app.use('/api/tasks', taskRoutes);
 
 
-// app.get("/",(req,res)=> 
-//     res.send("Server is Running")
-// );
+app.get("/",(req,res)=> 
+    res.send("Server is Running")
+);
 
 
 // Start Server
