@@ -6,7 +6,7 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
+       <Routes>
         <Route path="/" exact={true} element={<LoginPage />} />
         <Route path="/dashboard" exact={true} element={<Dashboard />} />
       </Routes>
