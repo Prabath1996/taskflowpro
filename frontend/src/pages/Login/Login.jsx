@@ -2,7 +2,7 @@ import React from "react";
 import { TextField, Button, Typography, Link, Box, Paper, colors } from "@mui/material";
 import backgroundImage from "../../assets/images/background.jpeg";
 
-export default function LoginPage() {
+export default function Login() {
  
   return (
     <Box
