@@ -1,5 +1,6 @@
 import Button from "@mui/material/Button";
 import { MdDashboard } from "react-icons/md";
+import { MdLock } from "react-icons/md";
 import { MdArrowForwardIos } from "react-icons/md";
 import { MdEngineering } from "react-icons/md";
 import { GiAutoRepair } from "react-icons/gi";
@@ -38,9 +39,27 @@ const Sidebar = () => {
               </Button>
             </Link>
           </li>
+           <li>
+            <Button className={`w-100 ${activeTab===1 && isToggleSubmenu===true ? 'active' : ''}`} onClick={() => isOpenSubmenu(1)}>
+                <span className="icon">
+                <MdLock />
+              </span>
+              Authentication
+              <span className="arrow">
+                <MdArrowForwardIos />
+              </span>
+            </Button>
+           <div className={`submenuWrapper ${activeTab===1 && isToggleSubmenu===true ? 'colapse' : 'colapsed'}`}>
+             <ul className="submenu">
+                <li><Link to="#">Login</Link></li>
+                <li><Link to="#">Register</Link></li>
+            </ul>
+           </div>
+          </li>
+
           <li>
             <Link to="#">
-            <Button className={`w-100 ${activeTab===1 ? 'active' : ''}`} onClick={() => isOpenSubmenu(1)}>
+            <Button className={`w-100 ${activeTab===2 ? 'active' : ''}`} onClick={() => isOpenSubmenu(2)}>
               <span className="icon">
                 <FaUsers />
               </span>
@@ -53,7 +72,7 @@ const Sidebar = () => {
           </li>
           <li>
             <Link to="#">
-            <Button className={`w-100 ${activeTab===2 ? 'active' : ''}`} onClick={() => isOpenSubmenu(2)}>
+            <Button className={`w-100 ${activeTab===3 ? 'active' : ''}`} onClick={() => isOpenSubmenu(3)}>
               <span className="icon">
                 <MdEngineering />
               </span>
@@ -65,7 +84,7 @@ const Sidebar = () => {
             </Link>
           </li>
           <li>
-            <Button className={`w-100 ${activeTab===3 && isToggleSubmenu===true ? 'active' : ''}`} onClick={() => isOpenSubmenu(3)}>
+            <Button className={`w-100 ${activeTab===4 && isToggleSubmenu===true ? 'active' : ''}`} onClick={() => isOpenSubmenu(4)}>
                 <span className="icon">
                 <IoShieldCheckmarkSharp />
               </span>
@@ -74,17 +93,16 @@ const Sidebar = () => {
                 <MdArrowForwardIos />
               </span>
             </Button>
-           <div className={`submenuWrapper ${activeTab===3 && isToggleSubmenu===true ? 'colapse' : 'colapsed'}`}>
+           <div className={`submenuWrapper ${activeTab===4 && isToggleSubmenu===true ? 'colapse' : 'colapsed'}`}>
              <ul className="submenu">
                 <li><Link to="#">Warranty In</Link></li>
                 <li><Link to="#">Warranty Out</Link></li>
             </ul>
            </div>
-            
           </li>
           <li>
             <Link to="#">
-            <Button className={`w-100 ${activeTab===4 ? 'active' : ''}`} onClick={() => isOpenSubmenu(4)}>
+            <Button className={`w-100 ${activeTab===5 ? 'active' : ''}`} onClick={() => isOpenSubmenu(5)}>
               <span className="icon">
                 <GiAutoRepair />
               </span>
@@ -97,7 +115,7 @@ const Sidebar = () => {
           </li>
           <li>
             <Link to="#">
-            <Button className={`w-100 ${activeTab===5 ? 'active' : ''}`} onClick={() => isOpenSubmenu(5)}>
+            <Button className={`w-100 ${activeTab===6 ? 'active' : ''}`} onClick={() => isOpenSubmenu(6)}>
               <span className="icon">
                 <FaTasks />
               </span>
