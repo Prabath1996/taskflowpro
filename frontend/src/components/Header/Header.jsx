@@ -67,9 +67,11 @@ const Header = () => {
               </Button>
             </div>
 
-            {isLogin !== true ? (
-              <Button className="btn-blue btn-lg btn-round">Sign In</Button>
-            ) : (
+            {/* {isLogin !== true ? (
+              <Link to={'/login'}><Button className="btn-blue btn-lg btn-round">Sign In</Button>
+              </Link> 
+            ) :  */}
+            
               <div className="myAccWrapper">
                 {/* <button className="myAcc d-flex align-items-center" onClick={handleOpenMyAccDrop}>
                   
@@ -165,7 +167,7 @@ const Header = () => {
                   </MenuItem>
                 </Menu>
               </div>
-            )}
+            
           </div>
         </div>
       </header>
