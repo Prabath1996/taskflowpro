@@ -6,8 +6,9 @@ import { RiLockPasswordFill } from "react-icons/ri";
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
 import Button from "@mui/material/Button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import googleIcon from "../../assets/images/google_icon.png";
+import axios from "axios";
 
 const Login = () => {
   const [inputIndex, setInputIndex] = useState(null);
@@ -16,6 +17,26 @@ const Login = () => {
   const focusInput = (index) => {
     setInputIndex(index);
   };
+
+//const [username,setUsername] = useState();
+const [email,setEmail] = useState();
+const [password,setpassword] = useState();
+const navigate = useNavigate();
+
+const handleSubmit = (e) => {
+  e.preventDefault();
+  axios.post('http://localhost:5000/login', {username,email,password})
+  .then(result => {
+    console.log(result)
+    if(result.data === "Success"){
+      navigate('/dashboard');
+    }
+     
+  })
+ .catch(err => console.log(result));
+}
+
+
 
   return (
     <>
@@ -28,7 +49,7 @@ const Login = () => {
           </div>
 
           <div className="wrapper mt-3 card border">
-            <form>
+            <form onSubmit={handleSubmit}>
               <div
                 className={`form-group position-relative ${
                   inputIndex === 0 && "focus"
@@ -39,6 +60,7 @@ const Login = () => {
                 </span>
                 <input
                   type="text"
+                  name="email"
                   className="form-control"
                   placeholder="Enter Your Email"
                   onFocus={() => focusInput(0)}
@@ -56,6 +78,7 @@ const Login = () => {
                 </span>
                 <input
                   type={`${isShowPassword === true ? "text" : "password"}`}
+                  name="password"
                   className="form-control"
                   placeholder="Enter Your Password"
                   onFocus={() => focusInput(1)}
@@ -71,7 +94,7 @@ const Login = () => {
               </div>
 
               <div className="form-group">
-                <Button className="btn-blue btn-lg w-100 btn-big">
+                <Button type="submit" className="btn-blue btn-lg w-100 btn-big">
                   Sign In
                 </Button>
               </div>

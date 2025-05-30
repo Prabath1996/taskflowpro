@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
 });
 
 // Create new user
-router.post('/', async (req, res) => {
+router.post('/register', async (req, res) => {
   try {
     const user = new User(req.body);
     await user.save();
