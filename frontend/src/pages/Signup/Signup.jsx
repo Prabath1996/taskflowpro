@@ -10,6 +10,7 @@ import Button from "@mui/material/Button";
 import { FaCircleUser } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import googleIcon from "../../assets/images/google_icon.png";
+import axios from "axios";
 
 const Signup = () => {
   const [inputIndex, setInputIndex] = useState(null);
@@ -19,6 +20,18 @@ const Signup = () => {
   const focusInput = (index) => {
     setInputIndex(index);
   };
+
+const [username,setUsername] = useState();
+const [email,setEmail] = useState();
+const [password,setpassword] = useState();
+
+const handleSubmit =(e) => {
+  e.preventDefault()
+  axios.post('http://localhost:5000/register', {username,email,password})
+  .then(result => console.log(result))
+  .catch(err => console.log(result))
+}
+
 
   return (
     <>
@@ -39,7 +52,7 @@ const Signup = () => {
               </div>
 
               <div className="wrapper mt-3 card border">
-                <form>
+                <form onSubmit={handleSubmit}>
                       <div
                     className={`form-group position-relative ${
                       inputIndex === 0 && "focus"
@@ -54,6 +67,7 @@ const Signup = () => {
                       placeholder="Enter Your Username"
                       onFocus={() => focusInput(0)}
                       onBlur={() => setInputIndex(null)}
+                      onChange={(e) => setUsername(e.target.value)}
                     />
                   </div>
 
@@ -71,6 +85,7 @@ const Signup = () => {
                       placeholder="Enter Your Email"
                       onFocus={() => focusInput(1)}
                       onBlur={() => setInputIndex(null)}
+                      onChange={(e) => setEmail(e.target.value)}
                     />
                   </div>
 
@@ -88,6 +103,7 @@ const Signup = () => {
                       placeholder="Enter Your Password"
                       onFocus={() => focusInput(2)}
                       onBlur={() => setInputIndex(null)}
+                      onChange={(e) => setpassword(e.target.value)}
                     />
 
                     <span
@@ -131,7 +147,7 @@ const Signup = () => {
                   </div>
 
                   <div className="form-group">
-                    <Button className="btn-blue btn-lg w-100 btn-big">
+                    <Button type="submit" className="btn-blue btn-lg w-100 btn-big">
                       Sign Up
                     </Button>
                   </div>
