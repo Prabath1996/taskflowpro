@@ -9,6 +9,8 @@ import Button from "@mui/material/Button";
 import { Link, useNavigate } from "react-router-dom";
 import googleIcon from "../../assets/images/google_icon.png";
 import axios from "axios";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 const Login = () => {
   const [inputIndex, setInputIndex] = useState(null);
@@ -18,25 +20,74 @@ const Login = () => {
     setInputIndex(index);
   };
 
-//const [username,setUsername] = useState();
-const [email,setEmail] = useState();
-const [password,setpassword] = useState();
-const navigate = useNavigate();
+  //const [email, setEmail] = useState();
+  //const [password, setPassword] = useState();
 
-const handleSubmit = (e) => {
-  e.preventDefault();
-  axios.post('http://localhost:5000/login', {username,email,password})
-  .then(result => {
-    console.log(result)
-    if(result.data === "Success"){
-      navigate('/dashboard');
+  const navigate = useNavigate();
+
+  const [data, setData] = useState({ email: " ", password: " " });
+  const [open, setOpen] = useState({ open: false, message: "", severity: "" });
+
+  const handleChange = (event) => {
+    if (event.target.id === "email") {
+      setData({ ...data, email: event.target.value });
     }
-     
-  })
- .catch(err => console.log(result));
-}
+    if (event.target.id === "password") {
+      setData({ ...data, password: event.target.value });
+    }
+  };
 
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
 
+    setOpen(false);
+  };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/users/login",
+        data
+      );
+
+      if (response.status === 200) {
+
+        console.log(response.data);
+        setOpen({open: true,message: response.data.message || "Login Successful! Redirecting...",severity: "success",});
+        navigate("/dashboard");
+
+      } else {
+
+        setOpen({open: true,message: "Login failed. Invalid credentials.",severity: "error",});
+      }
+    } catch (error) {
+      let errorMessage = "An error occurred. Please try again.";
+
+      if (error.response) {
+        // Server responded with a status code outside 2xx
+        if (error.response.status === 401) {
+          errorMessage = "Invalid email or password.";
+        } else if (error.response.status === 400) {
+          errorMessage = "Bad request. Check your input.";
+        } else if (error.response.status === 500) {
+          errorMessage = "Server error. Please try later.";
+        }
+      } else if (error.request) {
+        // Request was made but no response received
+        errorMessage = "Network error. Check your connection.";
+      }
+
+      setOpen({
+        open: true,
+        message: errorMessage,
+        severity: "error",
+      });
+    }
+  };
 
   return (
     <>
@@ -49,7 +100,7 @@ const handleSubmit = (e) => {
           </div>
 
           <div className="wrapper mt-3 card border">
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleLogin}>
               <div
                 className={`form-group position-relative ${
                   inputIndex === 0 && "focus"
@@ -59,12 +110,15 @@ const handleSubmit = (e) => {
                   <MdMail />
                 </span>
                 <input
+                  id="email"
                   type="text"
                   name="email"
+                  //value={data.email}
                   className="form-control"
                   placeholder="Enter Your Email"
                   onFocus={() => focusInput(0)}
                   onBlur={() => setInputIndex(null)}
+                  onChange={handleChange}
                 />
               </div>
 
@@ -77,12 +131,15 @@ const handleSubmit = (e) => {
                   <RiLockPasswordFill />
                 </span>
                 <input
+                  id="password"
                   type={`${isShowPassword === true ? "text" : "password"}`}
                   name="password"
+                  //value={data.password}
                   className="form-control"
                   placeholder="Enter Your Password"
                   onFocus={() => focusInput(1)}
                   onBlur={() => setInputIndex(null)}
+                  onChange={handleChange}
                 />
 
                 <span
@@ -109,22 +166,43 @@ const handleSubmit = (e) => {
                   <span className="line"></span>
                 </div>
 
-                <Button variant="outlined" className="w-100 btn-lg btn-big loginwithGoogle">
-                 <img src={googleIcon} width="25px" alt="google_icon" /> &nbsp; Sign In with Google
+                <Button
+                  variant="outlined"
+                  className="w-100 btn-lg btn-big loginwithGoogle"
+                >
+                  <img src={googleIcon} width="25px" alt="google_icon" /> &nbsp;
+                  Sign In with Google
                 </Button>
               </div>
             </form>
           </div>
 
           <div className="wrapper mt-3 card border footer p-2">
-                <span className="text-center">
-                  Don't have an account?
-                  <Link to={'/signup'} className="link color ml-2">Register</Link>
-                </span>
+            <span className="text-center">
+              Don't have an account?
+              <Link to={"/signup"} className="link color ml-2">
+                Register
+              </Link>
+            </span>
           </div>
-
         </div>
       </section>
+
+      <Snackbar
+        open={open.open}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <Alert
+          onClose={handleClose}
+          severity={open.severity}
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {open.message}
+        </Alert>
+      </Snackbar>
     </>
   );
 };
