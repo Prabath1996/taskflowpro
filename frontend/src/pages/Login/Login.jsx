@@ -30,7 +30,7 @@ const Login = () => {
     e.preventDefault();
     const {email,password} = data
     try {
-      const {data} = await axios.post("http://localhost:5000/api/users/login", {email,password});
+      const {data} = await axios.post("https://taskflowpro-exop.vercel.app/api/users/login", {email,password});
 
       if (data.error) {
         toast.error(data.error) 
