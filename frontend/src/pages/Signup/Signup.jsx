@@ -39,11 +39,11 @@ const navigate = useNavigate();
       const {data} = await axios.post('https://taskflowpro-exop.vercel.app/api/users/signup',{username,email,password,confirmPassword})
 
       if(data.error){
-        toast.error(data.error) 
+        toast.error(data.error,{position:"bottom-left"}) 
 
       }else{
         setData({})
-        toast.success('User Registration Successful')
+        toast.success('User Registration Successful',{position:"bottom-left"})
         navigate('/login')
       }
 
@@ -210,17 +210,6 @@ const navigate = useNavigate();
           </div>
         </div>
       </section>
-
-        {/* <Snackbar open={open.open} autoHideDuration={5000} onClose={handleClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}>
-              <Alert
-                onClose={handleClose}
-                severity={open.severity}
-                variant="filled"
-                sx={{ width: '100%' }}
-              >
-                {open.message}
-              </Alert>
-        </Snackbar>  */}
     </>
   );
 };
