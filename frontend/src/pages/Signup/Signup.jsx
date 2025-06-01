@@ -8,8 +8,10 @@ import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
 import Button from "@mui/material/Button";
 import { FaCircleUser } from "react-icons/fa6";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import googleIcon from "../../assets/images/google_icon.png";
+import axios from "axios";
+import toast from 'react-hot-toast';
 
 const Signup = () => {
   const [inputIndex, setInputIndex] = useState(null);
@@ -19,6 +21,38 @@ const Signup = () => {
   const focusInput = (index) => {
     setInputIndex(index);
   };
+
+const [data, setData] = useState({
+        username: '',
+        email: '',
+        password: '',
+        confirmPassword: ''
+    })
+const navigate = useNavigate();
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const {username,email,password,confirmPassword} = data
+    try {
+      const {data} = await axios.post('http://localhost:5000/api/users/signup',{username,email,password,confirmPassword})
+
+      if(data.error){
+        toast.error(data.error) 
+
+      }else{
+        setData({})
+        toast.success('User Registration Successful')
+        navigate('/login')
+      }
+
+    } catch (error) {
+      console.log(error)
+    }
+
+  };
+
 
   return (
     <>
@@ -39,7 +73,7 @@ const Signup = () => {
               </div>
 
               <div className="wrapper mt-3 card border">
-                <form>
+                <form onSubmit={handleSubmit}>
                       <div
                     className={`form-group position-relative ${
                       inputIndex === 0 && "focus"
@@ -50,10 +84,13 @@ const Signup = () => {
                     </span>
                     <input
                       type="text"
+                      name="username"
+                      value={data.username}
                       className="form-control"
                       placeholder="Enter Your Username"
                       onFocus={() => focusInput(0)}
                       onBlur={() => setInputIndex(null)}
+                      onChange={(e) => setData({...data,username:e.target.value})}
                     />
                   </div>
 
@@ -67,10 +104,13 @@ const Signup = () => {
                     </span>
                     <input
                       type="email"
+                      name="email"
+                      value={data.email}
                       className="form-control"
                       placeholder="Enter Your Email"
                       onFocus={() => focusInput(1)}
                       onBlur={() => setInputIndex(null)}
+                      onChange={(e) => setData({...data,email:e.target.value})}
                     />
                   </div>
 
@@ -84,10 +124,13 @@ const Signup = () => {
                     </span>
                     <input
                       type={`${isShowPassword === true ? "text" : "password"}`}
+                      name="password"
                       className="form-control"
                       placeholder="Enter Your Password"
+                      value={data.password}
                       onFocus={() => focusInput(2)}
                       onBlur={() => setInputIndex(null)}
+                      onChange={(e) => setData({...data,password:e.target.value})}
                     />
 
                     <span
@@ -110,10 +153,13 @@ const Signup = () => {
                       type={`${
                         isShowConfirmPassword === true ? "text" : "password"
                       }`}
+                      name="confirmPassword"
                       className="form-control"
+                      value={data.confirmPassword}
                       placeholder="Confirm Password"
                       onFocus={() => focusInput(3)}
                       onBlur={() => setInputIndex(null)}
+                      onChange={(e) => setData({...data,confirmPassword:e.target.value})}
                     />
 
                     <span
@@ -131,7 +177,7 @@ const Signup = () => {
                   </div>
 
                   <div className="form-group">
-                    <Button className="btn-blue btn-lg w-100 btn-big">
+                    <Button type="submit" className="btn-blue btn-lg w-100 btn-big">
                       Sign Up
                     </Button>
                   </div>
@@ -164,6 +210,17 @@ const Signup = () => {
           </div>
         </div>
       </section>
+
+        {/* <Snackbar open={open.open} autoHideDuration={5000} onClose={handleClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}>
+              <Alert
+                onClose={handleClose}
+                severity={open.severity}
+                variant="filled"
+                sx={{ width: '100%' }}
+              >
+                {open.message}
+              </Alert>
+        </Snackbar>  */}
     </>
   );
 };
