@@ -36,7 +36,7 @@ const navigate = useNavigate();
 
     const {username,email,password,confirmPassword} = data
     try {
-      const {data} = await axios.post('http://localhost:5000/api/users/signup',{username,email,password,confirmPassword})
+      const {data} = await axios.post('https://taskflowpro-exop.vercel.app/api/users/signup',{username,email,password,confirmPassword})
 
       if(data.error){
         toast.error(data.error) 
