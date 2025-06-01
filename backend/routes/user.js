@@ -14,44 +14,96 @@ router.get('/', async (req, res) => {
   }
 });
 
+
 //Regiter User
-  router.post('/signup', async (req, res) => {
+router.post('/signup', async (req,res)=> {
   try {
-    const { username,email, password } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ username,email, password: hashedPassword });
-    const existingUser = await User.findOne({ email });
-
-    if(existingUser){
-      res.status(409).send( 'User with this email already exists' );
-    }else{
-      await newUser.save();
-      res.status(201).send('User registered successfully');
+    const { username,email, password,confirmPassword} = req.body;
+    //Check if username was entered
+    if(!username){
+      return res.json({
+        error: 'Name is Required'
+      })
+    };
+    //Check if email was entered
+    if(!email){
+      return res.json({
+        error: 'Email is Required'
+      })
+    };
+     //Check if Password is good
+    if(!password || password.length < 6){
+      return res.json({
+        error: 'Password is Required and should be at least 6 characters long'
+      })
+    };
+    //Check password and confirmPassword are same
+    if(password !== confirmPassword){
+      return res.json({
+        error: 'Password does not match'
+      })
     }
-    
-  } catch (error) {
-    console.error('Error registering user:', error);
-    res.status(500).send('Error registering user');
-  }
-});
+    //Check Email
+    const exist = await User.findOne({email});
+     //Check if username was entered
+    if(exist){
+      return res.json({
+        error: 'Email is taken already'
+      })
+    };
 
+    //Encrypt the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    //Create User
+    const user = await User.create({
+      username,email,password:hashedPassword
+    })
+
+    return res.json(user)
+
+  } catch (error) {
+      console.log(error)
+  }
+})
 
 
 // User login
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
+    //Check if user exist
     const user = await User.findOne({ email });
-    if (user && await bcrypt.compare(password, user.password)) {
-      res.status(200).send('Login successful');
-    } else {
-      res.status(401).send('Invalid credentials');
+    if(!user){
+      return res.json({
+        error: 'No user found'
+      })
+    }
+       //Check if email was entered
+    if(!email){
+      return res.json({
+        error: 'Email is Required'
+      })
+    };
+     //Check if Password is good
+    if(!password || password.length < 6){
+      return res.json({
+        error: 'Password is Required and should be at least 6 characters long'
+      })
+    };
+    //Check if password match
+    const match = await bcrypt.compare(password, user.password)
+    if(match){
+      return res.json('password match')
+    }
+    else{
+      return res.json({
+        error: 'Password does not match'
+      })
     }
   } catch (error) {
-    console.error('Error logging in:', error);
-    res.status(500).send('Error logging in');
+    console.log( error);  
 }
 });
-
 
 module.exports = router;

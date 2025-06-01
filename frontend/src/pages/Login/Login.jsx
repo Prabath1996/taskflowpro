@@ -9,8 +9,7 @@ import Button from "@mui/material/Button";
 import { Link, useNavigate } from "react-router-dom";
 import googleIcon from "../../assets/images/google_icon.png";
 import axios from "axios";
-import Snackbar from "@mui/material/Snackbar";
-import Alert from "@mui/material/Alert";
+import toast from "react-hot-toast";
 
 const Login = () => {
   const [inputIndex, setInputIndex] = useState(null);
@@ -25,67 +24,24 @@ const Login = () => {
 
   const navigate = useNavigate();
 
-  const [data, setData] = useState({ email: " ", password: " " });
-  const [open, setOpen] = useState({ open: false, message: "", severity: "" });
-
-  const handleChange = (event) => {
-    if (event.target.id === "email") {
-      setData({ ...data, email: event.target.value });
-    }
-    if (event.target.id === "password") {
-      setData({ ...data, password: event.target.value });
-    }
-  };
-
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    setOpen(false);
-  };
+  const [data, setData] = useState({ email: '', password: '' });
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
+    const {email,password} = data
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/users/login",
-        data
-      );
+      const {data} = await axios.post("http://localhost:5000/api/users/login", {email,password});
 
-      if (response.status === 200) {
-
-        console.log(response.data);
-        setOpen({open: true,message: response.data.message || "Login Successful! Redirecting...",severity: "success",});
-        navigate("/dashboard");
-
+      if (data.error) {
+        toast.error(data.error) 
+      
       } else {
-
-        setOpen({open: true,message: "Login failed. Invalid credentials.",severity: "error",});
+        setData({});
+        toast.success('Login Successful. Welcome!')
+        navigate('/dashboard')
       }
     } catch (error) {
-      let errorMessage = "An error occurred. Please try again.";
-
-      if (error.response) {
-        // Server responded with a status code outside 2xx
-        if (error.response.status === 401) {
-          errorMessage = "Invalid email or password.";
-        } else if (error.response.status === 400) {
-          errorMessage = "Bad request. Check your input.";
-        } else if (error.response.status === 500) {
-          errorMessage = "Server error. Please try later.";
-        }
-      } else if (error.request) {
-        // Request was made but no response received
-        errorMessage = "Network error. Check your connection.";
-      }
-
-      setOpen({
-        open: true,
-        message: errorMessage,
-        severity: "error",
-      });
+      console.error(error);
     }
   };
 
@@ -113,12 +69,12 @@ const Login = () => {
                   id="email"
                   type="text"
                   name="email"
-                  //value={data.email}
+                  value={data.email}
                   className="form-control"
                   placeholder="Enter Your Email"
                   onFocus={() => focusInput(0)}
                   onBlur={() => setInputIndex(null)}
-                  onChange={handleChange}
+                  onChange={(e) =>setData({ ...data, email: e.target.value })}
                 />
               </div>
 
@@ -134,12 +90,12 @@ const Login = () => {
                   id="password"
                   type={`${isShowPassword === true ? "text" : "password"}`}
                   name="password"
-                  //value={data.password}
+                  value={data.password}
                   className="form-control"
                   placeholder="Enter Your Password"
                   onFocus={() => focusInput(1)}
                   onBlur={() => setInputIndex(null)}
-                  onChange={handleChange}
+                  onChange={(e) => setData({ ...data, password: e.target.value })}
                 />
 
                 <span
@@ -188,7 +144,7 @@ const Login = () => {
         </div>
       </section>
 
-      <Snackbar
+      {/* <Snackbar
         open={open.open}
         autoHideDuration={6000}
         onClose={handleClose}
@@ -202,7 +158,7 @@ const Login = () => {
         >
           {open.message}
         </Alert>
-      </Snackbar>
+      </Snackbar> */}
     </>
   );
 };
