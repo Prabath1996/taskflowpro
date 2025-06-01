@@ -1,18 +1,17 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
 import Login from "./pages/Login/Login";
-import Dashboard, { MyContext } from "./pages/Dashboard/Dashboard";
-import { useContext, useEffect, useState } from "react";
+import Dashboard from "./pages/Dashboard/Dashboard";
 import Signup from "./pages/Signup/Signup";
-
+import {Toaster} from 'react-hot-toast';
 
 
 function App() {
-
-  const context = useContext(MyContext);
-
+  
   return (
+    
     <BrowserRouter>
+    <Toaster position="bottom-right" toastOptions={{duration:3000}}/>
        <Routes>
         <Route path="/" exact={true} element={<Login/>} />
         <Route path="/login" exact={true} element={<Login/>} />
