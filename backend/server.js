@@ -30,6 +30,10 @@ connection.once("open", function() {
   }
 });
 
+app.get("/",(req,res)=> 
+    res.send("Server is Running")
+);
+
 
 // Routes
 app.use('/api/users', userRoutes);
@@ -38,12 +42,6 @@ app.use('/api/employees', employeeRoutes);
 app.use('/api/warranty', warrantyRoutes);
 app.use('/api/repairs', repairRoutes);
 app.use('/api/tasks', taskRoutes);
-
-
-app.get("/",(req,res)=> 
-    res.send("Server is Running")
-);
-
 
 // Start Server
 app.listen(PORT,() => 

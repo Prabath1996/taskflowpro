@@ -11,7 +11,7 @@ import { FaCircleUser } from "react-icons/fa6";
 import { Link, useNavigate } from "react-router-dom";
 import googleIcon from "../../assets/images/google_icon.png";
 import axios from "axios";
-import { Alert,Snackbar } from "@mui/material";
+import toast from 'react-hot-toast';
 
 const Signup = () => {
   const [inputIndex, setInputIndex] = useState(null);
@@ -22,17 +22,7 @@ const Signup = () => {
     setInputIndex(index);
   };
 
- const [open, setOpen] = useState({open:false,message:"",severity:""});
-  
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setOpen(false);
-  };
-
-
-const [formData, setFormData] = useState({
+const [data, setData] = useState({
         username: '',
         email: '',
         password: '',
@@ -41,36 +31,27 @@ const [formData, setFormData] = useState({
 const navigate = useNavigate();
 
 
-const handleChange = (e) => {
-        setFormData({...formData,[e.target.name]: e.target.value});
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
+    const {username,email,password,confirmPassword} = data
+    try {
+      const {data} = await axios.post('http://localhost:5000/api/users/signup',{username,email,password,confirmPassword})
 
-const handleSubmit = async (e) => {
-e.preventDefault()
+      if(data.error){
+        toast.error(data.error) 
 
-   if (formData.password !== formData.confirmPassword) {
-            setOpen({open: true,message: "Passwords do not match",severity: "error",});
-            console.log('Passwords do not match')
-            return;
-        }
+      }else{
+        setData({})
+        toast.success('User Registration Successful')
+        navigate('/login')
+      }
 
-      try {
-            const response = await axios.post('http://localhost:5000/api/users/signup', formData)
-           
-            if(response.status === 409) {
-                setOpen({open: true,message: "User with this email already exists",severity: "error",});
-                console.log('User with this email already exists')
-            } else {
-                setOpen({open: true,message: "User registration Successful",severity: "success",});
-                console.log('User registration Successful')
-                navigate('/login')
-            }
-        } catch(err) {
-            setOpen({open: true,message: "An error occured during user registration" ,severity: "error",});
-        }
-
+    } catch (error) {
+      console.log(error)
     }
+
+  };
 
 
   return (
@@ -104,12 +85,12 @@ e.preventDefault()
                     <input
                       type="text"
                       name="username"
-                      value={formData.username}
+                      value={data.username}
                       className="form-control"
                       placeholder="Enter Your Username"
                       onFocus={() => focusInput(0)}
                       onBlur={() => setInputIndex(null)}
-                      onChange={handleChange}
+                      onChange={(e) => setData({...data,username:e.target.value})}
                     />
                   </div>
 
@@ -124,12 +105,12 @@ e.preventDefault()
                     <input
                       type="email"
                       name="email"
-                      value={formData.email}
+                      value={data.email}
                       className="form-control"
                       placeholder="Enter Your Email"
                       onFocus={() => focusInput(1)}
                       onBlur={() => setInputIndex(null)}
-                      onChange={handleChange}
+                      onChange={(e) => setData({...data,email:e.target.value})}
                     />
                   </div>
 
@@ -146,10 +127,10 @@ e.preventDefault()
                       name="password"
                       className="form-control"
                       placeholder="Enter Your Password"
-                      value={formData.password}
+                      value={data.password}
                       onFocus={() => focusInput(2)}
                       onBlur={() => setInputIndex(null)}
-                      onChange={handleChange}
+                      onChange={(e) => setData({...data,password:e.target.value})}
                     />
 
                     <span
@@ -174,11 +155,11 @@ e.preventDefault()
                       }`}
                       name="confirmPassword"
                       className="form-control"
-                      value={formData.confirmPassword}
+                      value={data.confirmPassword}
                       placeholder="Confirm Password"
                       onFocus={() => focusInput(3)}
                       onBlur={() => setInputIndex(null)}
-                      onChange={handleChange}
+                      onChange={(e) => setData({...data,confirmPassword:e.target.value})}
                     />
 
                     <span
@@ -230,7 +211,7 @@ e.preventDefault()
         </div>
       </section>
 
-        <Snackbar open={open.open} autoHideDuration={5000} onClose={handleClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}>
+        {/* <Snackbar open={open.open} autoHideDuration={5000} onClose={handleClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}>
               <Alert
                 onClose={handleClose}
                 severity={open.severity}
@@ -239,7 +220,7 @@ e.preventDefault()
               >
                 {open.message}
               </Alert>
-        </Snackbar> 
+        </Snackbar>  */}
     </>
   );
 };
