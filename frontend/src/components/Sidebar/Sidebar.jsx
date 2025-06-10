@@ -1,3 +1,4 @@
+import './Sidebar.css';
 import Button from "@mui/material/Button";
 import { MdDashboard } from "react-icons/md";
 import { MdLock } from "react-icons/md";
@@ -21,9 +22,10 @@ const Sidebar = () => {
        setIsToggleSubmenu(!isToggleSubmenu);
     }
 
-
+   
   return (
     <>
+
       <div className="sidebar">
         <ul>
           <li>
@@ -58,7 +60,7 @@ const Sidebar = () => {
           </li>
 
           <li>
-            <Link to="#">
+            <Link to="/customers">
             <Button className={`w-100 ${activeTab===2 ? 'active' : ''}`} onClick={() => isOpenSubmenu(2)}>
               <span className="icon">
                 <FaUsers />
@@ -71,7 +73,7 @@ const Sidebar = () => {
             </Link>
           </li>
           <li>
-            <Link to="#">
+            <Link to="/employees">
             <Button className={`w-100 ${activeTab===3 ? 'active' : ''}`} onClick={() => isOpenSubmenu(3)}>
               <span className="icon">
                 <MdEngineering />
@@ -138,6 +140,8 @@ const Sidebar = () => {
     </div>
     
       </div>
+      
+
     </>
   );
 };

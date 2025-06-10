@@ -1,0 +1,139 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans",
+    "Droid Sans", "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.btnAddCustomer {
+  background: #0858f7;
+  color: #fff;
+  font-size: 14px;
+  /* font-weight: 600; */
+  text-transform: uppercase;
+  border-radius: 8px;
+  padding: 8px 25px;
+}
+
+.customerTableWrapper {
+  width: 100%;
+  height: calc(100vh - 300px);
+  overflow-y: auto;
+}
+.customerTableWrapper::-webkit-scrollbar {
+  width: 8px;
+}
+.customerTableWrapper::-webkit-scrollbar-thumb {
+  background: #7d7e80;
+  border-radius: 4px;
+}
+.customerTableWrapper::-webkit-scrollbar-track {
+  background: #f0f5ff;
+}
+.customerTableWrapper::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+.customerTableWrapper::-webkit-scrollbar-thumb:active {
+  background: #333;
+}
+.customerTableWrapper::-webkit-scrollbar-corner {
+  background: transparent;
+}
+.customerTableWrapper table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.customerTableWrapper th,
+.customerTableWrapper td {
+  font-size: 14px;
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+.customerTableWrapper th {
+  font-size: 16px !important;
+  background-color: #f0f5ff;
+  font-weight: 600;
+}
+.customerTableWrapper tr:hover {
+  background-color: #f1f1f1;
+}
+.customerTableWrapper .actions {
+  display: flex;
+  gap: 10px;
+}
+.customerTableWrapper .actions button {
+  display: inline-flex;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .customerTableWrapper {
+    height: auto;
+    max-height: calc(100vh - 350px);
+  }
+
+  .customerTableWrapper .actions {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .customerTableWrapper th,
+  .customerTableWrapper td {
+    padding: 8px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .customerTableWrapper table {
+    display: block;
+    overflow-x: auto;
+  }
+
+  .customer-card {
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+  }
+}
+
+/* Pagination styles */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.pagination button {
+  min-width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.paginationInfo {
+  display: flex;
+  gap: 20px;
+}
+
+@media (max-width: 600px) {
+  .pagination {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .paginationInfo {
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+  }
+}
