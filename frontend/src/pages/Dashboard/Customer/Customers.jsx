@@ -14,6 +14,7 @@ import {
   Typography,
   useMediaQuery,
   useTheme,
+  CircularProgress,
 } from "@mui/material"
 import { FaUserPlus, FaEdit, FaSearch } from "react-icons/fa"
 import { IoMdCloseCircle } from "react-icons/io"
@@ -27,6 +28,9 @@ const Customers = () => {
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
   const isTablet = useMediaQuery(theme.breakpoints.down("md"))
+
+    // Loading state
+  const [isLoading, setIsLoading] = useState(true)
 
   // Dialog state
   const [open, setOpen] = useState(false)
@@ -42,6 +46,7 @@ const Customers = () => {
   //get data from database
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true)
       try {
         const response = await axios.get("https://taskflowpro-exop.vercel.app/api/customers/getCustomers")
         if (response.status === 200) {
@@ -50,6 +55,9 @@ const Customers = () => {
         }
       } catch (error) {
         console.error("Error fetching customer data:", error)
+          toast.error("Failed to load employee data", { position: "bottom-left" })
+      } finally {
+        setIsLoading(false)
       }
     }
     fetchData()
@@ -63,8 +71,12 @@ const Customers = () => {
     phoneNo: "",
   })
 
+   // Loading state for add/update operations
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
   const handleAddCustomer = async (e) => {
     e.preventDefault()
+    setIsSubmitting(true)
 
     const { customerName, email, address, phoneNo } = data
 
@@ -118,6 +130,8 @@ const Customers = () => {
     } catch (error) {
       console.log(error)
       toast.error("Operation failed", { position: "bottom-left" })
+      } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -147,9 +161,12 @@ const Customers = () => {
   }
 
   // Handle delete customer
+  const [isDeletingId, setIsDeletingId] = useState(null)
+
   const handleDeleteCustomer = async (customerId) => {
     
     if (window.confirm("Are you sure you want to delete this customer?")) {
+      setIsDeletingId(customerId)
       try {
         const response = await axios.delete(`https://taskflowpro-exop.vercel.app/api/customers/deleteCustomers/${customerId}`)
 
@@ -162,7 +179,9 @@ const Customers = () => {
         }
       } catch (error) {
         console.log(error)
-        toast.error("Failed to delete customer", { position: "bottom-left" })
+        toast.error("Failed to Delete customer", { position: "bottom-left" })
+      }finally {
+        setIsDeletingId(null)
       }
     }
   }
@@ -236,6 +255,7 @@ const Customers = () => {
             color="success"
             size="small"
             startIcon={<FaEdit />}
+             disabled={isDeletingId === customer._id}
           >
             Edit
           </Button>
@@ -245,9 +265,10 @@ const Customers = () => {
             variant="outlined"
             color="error"
             size="small"
-            startIcon={<MdDelete />}
+            startIcon={isDeletingId === customer._id ? <CircularProgress size={16} color="error" /> : <MdDelete />}
+            disabled={isDeletingId === customer._id}
           >
-            Delete
+             {isDeletingId === customer._id ? "Deleting..." : "Delete"}
           </Button>
         </Box>
       </Card>
@@ -284,6 +305,7 @@ const Customers = () => {
                         color="success"
                         size={isTablet ? "small" : "medium"}
                         startIcon={<FaEdit />}
+                        disabled={isDeletingId === customer._id}
                       >
                         {!isTablet && "Edit"}
                       </Button>
@@ -292,9 +314,13 @@ const Customers = () => {
                         variant="outlined"
                         color="error"
                         size={isTablet ? "small" : "medium"}
-                        startIcon={<MdDelete />}
+                        startIcon={
+                          isDeletingId === customer._id ? <CircularProgress size={16} color="error" /> : <MdDelete />
+                        }
+                        disabled={isDeletingId === customer._id}
                       >
-                        {!isTablet && "Delete"}
+                        {!isTablet && (isDeletingId === customer._id ? 
+                        "Deleting..." : "Delete")}
                       </Button>
                     </div>
                   </td>
@@ -311,6 +337,25 @@ const Customers = () => {
     setOpen(false)
     resetForm()
   }
+
+   // Loading screen component
+  const LoadingScreen = () => (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        height: "300px",
+        width: "100%",
+      }}
+    >
+      <CircularProgress size={60} />
+      <Typography variant="h6" sx={{ mt: 2 }}>
+        Loading customer data...
+      </Typography>
+    </Box>
+  )
 
   return (
     <>
@@ -331,7 +376,8 @@ const Customers = () => {
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
         <DialogTitle>
           {editMode ? "Edit Customer" : "Add Customer"}
-          <IconButton style={{ float: "right" }} onClick={handleClose} color="default">
+         <IconButton style={{ float: "right" }} onClick={handleClose} 
+         color="default" disabled={isSubmitting}>
             <IoMdCloseCircle />
           </IconButton>
         </DialogTitle>
@@ -348,6 +394,7 @@ const Customers = () => {
                 variant="outlined"
                 fullWidth
                 margin="normal"
+                disabled={isSubmitting}
               />
               <TextField
                 size="small"
@@ -358,6 +405,7 @@ const Customers = () => {
                 variant="outlined"
                 fullWidth
                 margin="normal"
+                disabled={isSubmitting}
               />
               <TextField
                 size="small"
@@ -368,6 +416,7 @@ const Customers = () => {
                 variant="outlined"
                 fullWidth
                 margin="normal"
+                disabled={isSubmitting}
               />
               <TextField
                 size="small"
@@ -378,9 +427,20 @@ const Customers = () => {
                 variant="outlined"
                 fullWidth
                 margin="normal"
+                disabled={isSubmitting}
               />
-              <Button type="submit" className="btn-lg" variant="contained" color="primary" sx={{ mt: 2 }}>
-                {editMode ? "Update" : "Submit"}
+              <Button 
+              type="submit" 
+              className="btn-lg" 
+              variant="contained" 
+              color="primary" 
+              sx={{ mt: 2 }}
+              disabled={isSubmitting}
+              startIcon={isSubmitting && <CircularProgress size={16} 
+              color="inherit" />}
+              >
+               {isSubmitting ? (editMode ? "Updating..." : 
+               "Adding...") : editMode ? "Update" : "Add"}
               </Button>
             </form>
           </Stack>
@@ -410,6 +470,7 @@ const Customers = () => {
               sx={{ maxWidth: isMobile ? "100%" : "300px" }}
               onChange={handleSearchChange}
               value={searchTerm}
+               disabled={isLoading}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -425,6 +486,7 @@ const Customers = () => {
               variant="contained"
               onClick={handleOpen}
               startIcon={<FaUserPlus />}
+               disabled={isLoading}
               sx={{
                 whiteSpace: "nowrap",
                 minWidth: isMobile ? "100%" : "auto",
@@ -433,7 +495,13 @@ const Customers = () => {
               Add Customer
             </Button>
           </Box>
-
+          
+           {/* Loading Screen or Employee List */}
+          {isLoading ? (
+            <LoadingScreen />
+          ) : (
+          <>
+          
           {/* Customer List - Table or Cards based on screen size */}
           {isMobile ? renderCustomerCards() : renderCustomerTable()}
 
@@ -474,6 +542,8 @@ const Customers = () => {
               </Typography>
             </Box>
           </Box>
+           </>
+          )}
         </CardContent>
       </Card>
     </>
