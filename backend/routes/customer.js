@@ -73,7 +73,7 @@ router.get('/getCustomers/:id', async (req, res) => {
 router.put('/updateCustomers/:id', async (req, res) => {
   try {
     const customer = await Customer.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!customer) return res.status(404).json({ error: 'Customer not found' });
+    if (!customer) return res.status(404).json({ error: 'Customer not found'});
     res.json(customer);
   } catch (err) {
     res.status(400).json({ error: err.message });
