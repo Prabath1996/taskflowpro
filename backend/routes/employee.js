@@ -3,7 +3,7 @@ const Employee = require('../models/Employee');
 const router = express.Router();
 
 // Get all employees
-router.get('/', async (req, res) => {
+router.get('/getEmployees', async (req, res) => {
   try {
     const employees = await Employee.find();
     res.json(employees);
@@ -13,18 +13,45 @@ router.get('/', async (req, res) => {
 });
 
 // Create new employee
-router.post('/', async (req, res) => {
-  try {
-    const employee = new Employee(req.body);
-    await employee.save();
-    res.status(201).json({message: 'Employee Created Successfully'});
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
+router.post('/addEmployees', async (req, res) => {
+ try {
+     const employee = new Employee(req.body);
+     // Validate required fields
+     if (!employee.employeeName) {
+       return res.json({
+         error: 'Employee Name is required'
+       });
+     }
+      // Validate phone number
+     if (!employee.phoneNo) {
+       return res.json({ 
+         error: 'Phone number is required' 
+       });
+     }
+       // Validate designation
+     if (!employee.designation) {
+       return res.json({ 
+         error: 'Designation is required' 
+       });
+     }
+         // Validate joinedDate
+     if (!employee.joinedDate) {
+       return res.json({ 
+         error: 'Joined Date is required' 
+       });
+     }
+     // Save the employee
+     await employee.save();
+     // Return the created employee
+     res.json(employee);
+ 
+   } catch (error) {
+     console.log(error)
+   }
 });
 
 // Get single employee
-router.get('/:id', async (req, res) => {
+router.get('/getEmployees/:id', async (req, res) => {
   try {
     const employee = await Employee.findById(req.params.id);
     if (!employee) return res.status(404).json({ error: 'Employee not found' });
@@ -35,7 +62,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Update employee
-router.put('/:id', async (req, res) => {
+router.put('/updateEmployees/:id', async (req, res) => {
   try {
     const employee = await Employee.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!employee) return res.status(404).json({ error: 'Employee not found' });
@@ -46,7 +73,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // Delete employee
-router.delete('/:id', async (req, res) => {
+router.delete('/deleteEmployees/:id', async (req, res) => {
   try {
     const employee = await Employee.findByIdAndDelete(req.params.id);
     if (!employee) return res.status(404).json({ error: 'Employee not found' });
