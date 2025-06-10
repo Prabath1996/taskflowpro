@@ -1,29 +1,13 @@
-import React, { createContext, useState } from "react";
-import Header from "../../components/Header/Header";
-import Sidebar from "../../components/Sidebar/Sidebar";
 
-const MyContext = createContext();
 
 const Dashboard = () => {
-  const [isTogglesidebar, setIsToggleSidebar] = useState(false);
-  // const [isLogin, setIsLogin] = useState(faslse);
-
-  const values = {
-    isTogglesidebar,
-    setIsToggleSidebar,
-  };
 
   return (
     <>
-      <MyContext.Provider value={values}>
-        <Header />
-        <div className="main d-flex">
-          <div
-            className={`sidebarWrapper ${isTogglesidebar === true ? "toggle" : ""}`}>
-            <Sidebar />
-          </div>
-
-          <div className="right-content w-100">
+      <h1>Dashboard Page</h1>
+       <h6>Dashboard</h6>
+        {/* <div className="main d-flex">          */}
+          {/* <div className="right-content w-100"> */}
             <div className="row dashboardBoxWrapperRow">
               <div className="col-md-8">
                 <div className="dashboardBoxWrapper d-flex">
@@ -39,12 +23,12 @@ const Dashboard = () => {
                 <div className="box"></div>
               </div>
             </div>
-          </div>
-        </div>
-      </MyContext.Provider>
+          {/* </div> */}
+        {/* </div> */}
+      
     </>
   );
 };
 
 export default Dashboard;
-export { MyContext };
+
