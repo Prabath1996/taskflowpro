@@ -1,4 +1,4 @@
-import { React, useState, useRef, createContext, useContext } from "react";
+import { React, useState, useRef, useContext } from "react";
 import logo from "../../assets/images/logo.png";
 import userImg from "../../assets/images/userImg.png";
 import { Link } from "react-router-dom";
@@ -9,7 +9,7 @@ import { MdOutlineLightMode } from "react-icons/md";
 import { MdNightlight } from "react-icons/md";
 
 import Button from "@mui/material/Button";
-import { Avatar, Box, Stack, Typography } from "@mui/material";
+import { Avatar, Box, Stack } from "@mui/material";
 import { IconButton } from "@mui/material";
 import { IoMdPerson } from "react-icons/io";
 import { IoShieldHalfOutline } from "react-icons/io5";
@@ -17,13 +17,13 @@ import { MdOutlineLogout } from "react-icons/md";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
-import { MyContext } from "../../pages/Dashboard/Dashboard";
+import { MyContext } from "../../App";
 
 const Header = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
-  const [isLogin, setISLogin] = useState(false);
+  //const [isLogin, setISLogin] = useState(false);
 
   const context = useContext(MyContext);
 
