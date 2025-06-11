@@ -16,7 +16,7 @@ const RepairSchema = new Schema(
       required: true,
       unique: true,
     },
-    issueDetails: {
+    fault: {
       type: String,
       required: true,
     },

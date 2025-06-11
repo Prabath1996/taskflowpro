@@ -235,6 +235,27 @@ const Customers = () => {
 
   // Render customer cards for mobile view
   const renderCustomerCards = () => {
+      if (currentItems.length === 0) {
+      return (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "200px",
+            width: "100%",
+          }}
+        >
+          <Typography variant="h6" color="textSecondary">
+            No customer found
+          </Typography>
+          <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
+            {searchTerm ? "Try adjusting your search criteria" : "Add your first customer to get started"}
+          </Typography>
+        </Box>
+      )
+    }
     return currentItems.map((customer) => (
       <Card key={customer._id} className="customer-card" sx={{ mb: 2, p: 2 }}>
         <Typography variant="h6">{customer.customerName}</Typography>
@@ -290,7 +311,19 @@ const Customers = () => {
             </tr>
           </thead>
           <tbody>
-            {currentItems.map((customer) => {
+             {currentItems.length === 0 ? (
+              <tr>
+                <td colSpan={isTablet ? "4" : "5"} style={{ textAlign: "center", padding: "40px" }}>
+                  <Typography variant="h6" color="textSecondary">
+                    No customer found
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
+                    {searchTerm ? "Try adjusting your search criteria" : "Add your first customer to get started"}
+                  </Typography>
+                </td>
+              </tr>
+            ) : (
+            currentItems.map((customer) => {
               return (
                 <tr key={customer._id}>
                   <td>{customer.customerName}</td>
@@ -326,7 +359,8 @@ const Customers = () => {
                   </td>
                 </tr>
               )
-            })}
+            })
+          )}
           </tbody>
         </table>
       </div>
