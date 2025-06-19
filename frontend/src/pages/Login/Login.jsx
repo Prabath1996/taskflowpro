@@ -7,9 +7,9 @@ import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
 import Button from "@mui/material/Button";
 import { Link, useNavigate } from "react-router-dom";
-import googleIcon from "../../assets/images/google_icon.png";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { SessionManager } from "../../components/Utils/SessionManager";
 
 const Login = () => {
   const [inputIndex, setInputIndex] = useState(null);
@@ -18,9 +18,6 @@ const Login = () => {
   const focusInput = (index) => {
     setInputIndex(index);
   };
-
-  //const [email, setEmail] = useState();
-  //const [password, setPassword] = useState();
 
   const navigate = useNavigate();
 
@@ -36,6 +33,15 @@ const Login = () => {
         toast.error(data.error) 
       
       } else {
+        // Store user session data
+        SessionManager.setUserSession({
+          email: email,
+          name: data.username || email.split("@")[0],
+          userId: data._id || Date.now().toString(),
+          ...data,
+        })
+
+
         setData({});
         toast.success('Login Successful. Welcome!')
         navigate('/dashboard')
@@ -116,19 +122,6 @@ const Login = () => {
                 <Link to={"/forgot-password"} className="link">
                   FORGOT PASSWORD ?
                 </Link>
-                <div className="d-flex align-items-center justify-content-center or mt-3 mb-3">
-                  <span className="line"></span>
-                  <span className="txt">or</span>
-                  <span className="line"></span>
-                </div>
-
-                <Button
-                  variant="outlined"
-                  className="w-100 btn-lg btn-big loginwithGoogle"
-                >
-                  <img src={googleIcon} width="25px" alt="google_icon" /> &nbsp;
-                  Sign In with Google
-                </Button>
               </div>
             </form>
           </div>

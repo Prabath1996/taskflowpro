@@ -1,0 +1,33 @@
+@media only screen and (min-width: 320px) and (max-width:892px) {
+  
+    .main .content {
+        flex: 0 0 100% !important;
+        width: 100% !important;
+    }
+
+  .res-hide{display: none !important;}
+  .res-show{display: block !important;}
+  
+  header{ padding: 14px 0px; height: auto;}
+  header .part1,header .part3{padding: 0px !important;}
+  header .part1{max-width: 30% !important; flex: 0 0 30% !important;}
+  header .logo{width: 35px !important;}
+  header .part3{max-width: 30% !important; flex: 0 0 30% !important;}
+
+  .sidebarOverlay{position: fixed; top: 0px; left: 0px; background: rgba(0, 0, 0, 0.6); 
+  z-index: 100;width: 100%; height: 100% !important;}
+  .sidebarOverlay.show{display: block !important;}
+
+.loginSection{height: auto !important;}
+.signUpSection .col-md-8{display: none !important;}
+
+}
+
+@media only screen and (min-width: 320px) and (max-width:575px) {
+  .userImg{width: 35px; height: 35px;}
+  .myAccWrapper button{padding: 0px !important; min-width: 35px !important;}
+
+}
+@media only screen and (min-width:768px) {
+  .hide-btn{display: none !important;} 
+}

@@ -3,7 +3,7 @@ const Repair = require('../models/Repair');
 const router = express.Router();
 
 // Get all repairs
-router.get('/', async (req, res) => {
+router.get('/getRepairs', async (req, res) => {
   try {
     const repairs = await Repair.find();
     res.json(repairs);
@@ -13,18 +13,54 @@ router.get('/', async (req, res) => {
 });
 
 // Create repair
-router.post('/', async (req, res) => {
+router.post('/addRepairs', async (req, res) => {
   try {
-    const repair = new Repair(req.body);
+   const repair = new Repair(req.body);
+       // Validate required fields
+       if (!repair.itemName) {
+         return res.json({
+           error: 'Item Name is required'
+         });
+       }
+        if (!repair.modelNo) {
+         return res.json({
+           error: 'Model No is required'
+         });
+       }
+       if (!repair.serialNo) {
+         return res.json({ 
+           error: 'Serial No is required' 
+         });
+       }
+       if (!repair.fault) {
+         return res.json({ 
+           error: 'Fault Description is required' 
+         });
+       }
+       if (!repair.customerName) {
+         return res.json({ 
+           error: 'Customer field is required' 
+         });
+       }
+       if (!repair.recievedBy) {
+         return res.json({ 
+           error: 'Recieved By field is required' 
+         });
+       }
+
+    // Save the repair record
     await repair.save();
-    res.status(201).json(repair);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
+    // Return the created repair record
+    res.json(repair);
+
+  } catch (error) {
+    console.log(error);
+    
   }
 });
 
 // Get single repair
-router.get('/:id', async (req, res) => {
+router.get('/getRepairs/:id', async (req, res) => {
   try {
     const repair = await Repair.findById(req.params.id);
     if (!repair) return res.status(404).json({ error: 'Repair not found' });
@@ -35,7 +71,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Update repair
-router.put('/:id', async (req, res) => {
+router.put('/updateRepairs/:id', async (req, res) => {
   try {
     const repair = await Repair.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!repair) return res.status(404).json({ error: 'Repair not found' });
@@ -46,7 +82,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // Delete repair
-router.delete('/:id', async (req, res) => {
+router.delete('/deleteRepairs/:id', async (req, res) => {
   try {
     const repair = await Repair.findByIdAndDelete(req.params.id);
     if (!repair) return res.status(404).json({ error: 'Repair not found' });

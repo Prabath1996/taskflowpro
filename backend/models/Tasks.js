@@ -14,7 +14,11 @@ const TaskSchema = new Schema(
       type: String,
       required: true,
     },
-    siteName: {
+    customerName: {
+      type: String,
+      required: true,
+    },
+     location: {
       type: String,
       required: true,
     },

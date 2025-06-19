@@ -7,7 +7,15 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+.customer-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  transition: box-shadow 0.3s ease;
+}
 
+.customer-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 .btnAddCustomer {
   background: #0858f7;
   color: #fff;
@@ -22,25 +30,6 @@ body {
   width: 100%;
   height: calc(100vh - 300px);
   overflow-y: auto;
-}
-.customerTableWrapper::-webkit-scrollbar {
-  width: 8px;
-}
-.customerTableWrapper::-webkit-scrollbar-thumb {
-  background: #7d7e80;
-  border-radius: 4px;
-}
-.customerTableWrapper::-webkit-scrollbar-track {
-  background: #f0f5ff;
-}
-.customerTableWrapper::-webkit-scrollbar-thumb:hover {
-  background: #555;
-}
-.customerTableWrapper::-webkit-scrollbar-thumb:active {
-  background: #333;
-}
-.customerTableWrapper::-webkit-scrollbar-corner {
-  background: transparent;
 }
 .customerTableWrapper table {
   width: 100%;
