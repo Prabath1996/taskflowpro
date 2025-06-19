@@ -9,7 +9,6 @@ import { FaEyeSlash } from "react-icons/fa";
 import Button from "@mui/material/Button";
 import { FaCircleUser } from "react-icons/fa6";
 import { Link, useNavigate } from "react-router-dom";
-import googleIcon from "../../assets/images/google_icon.png";
 import axios from "axios";
 import toast from 'react-hot-toast';
 
@@ -180,25 +179,8 @@ const navigate = useNavigate();
                     <Button type="submit" className="btn-blue btn-lg w-100 btn-big">
                       Sign Up
                     </Button>
-                  </div>
-
-                  <div className="form-group text-center mb-0">
-                    <div className="d-flex align-items-center justify-content-center or mt-3 mb-3">
-                      <span className="line"></span>
-                      <span className="txt">or</span>
-                      <span className="line"></span>
-                    </div>
-
-                    <Button
-                      variant="outlined"
-                      className="w-100 btn-lg btn-big loginwithGoogle"
-                    >
-                      <img src={googleIcon} width="25px" alt="google_icon" />{" "}
-                      &nbsp; Sign In with Google
-                    </Button>
-                  </div>
+                  </div>       
                 </form>
-
                 <span className="text-center d-block mt-3">
                   Already have an account?
                   <Link to={"/login"} className="link color ml-2">
