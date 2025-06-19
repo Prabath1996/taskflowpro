@@ -1,15 +1,19 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
+import "./responsive.css";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Login from "./pages/Login/Login";
 import Signup from "./pages/Signup/Signup";
 import {Toaster} from 'react-hot-toast';
 import Customers from "./pages/Dashboard/Customer/Customers";
-import { useState, createContext } from "react";
+import { useState, createContext, useEffect } from "react";
 import Sidebar from "./components/Sidebar/Sidebar";
 import Header from "./components/Header/Header";
 import { Outlet } from "react-router-dom";
 import Employees from "./pages/Dashboard/Employees/Employees";
+import Repair from "./pages/Dashboard/Repair/Repair";
+import Tasks from "./pages/Dashboard/Tasks/Tasks";
+import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 
 const MyContext = createContext();
 function App() {
@@ -17,10 +21,23 @@ function App() {
 
    const [isTogglesidebar, setIsToggleSidebar] = useState(false);
       // const [isLogin, setIsLogin] = useState(faslse);
+  const [windowWidth,setWindowWidth] = useState(window.innerWidth);
     
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
       const values = {
         isTogglesidebar,
         setIsToggleSidebar,
+        windowWidth,
       };
 
   return (
@@ -36,18 +53,25 @@ function App() {
           <MyContext.Provider value={values}>
             <Header />
             <div className="main d-flex">
-              <div className={`sidebarWrapper ${isTogglesidebar === true ? "toggle" : ""}`}>
+               <>
+                <div className={`sidebarOverlay d-none ${isTogglesidebar=== false && 'show'}`} onClick={()=>setIsToggleSidebar(true)}> </div>
+               <div className={`sidebarWrapper ${isTogglesidebar === true ? "toggle" : ""}`}>
                 <Sidebar />                
-              </div>
+               </div>
+              
+               </>
+              
               <div className="right-content w-100">
                   <Outlet />
                 </div>
             </div>
           </MyContext.Provider>
         }>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/customers" element={<Customers />} />
-           <Route path="/employees" element={<Employees />} />
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/customers" element={<ProtectedRoute><Customers/></ProtectedRoute>} />
+           <Route path="/employees" element={<ProtectedRoute><Employees /></ProtectedRoute>} />
+           <Route path="/repair" element={<ProtectedRoute><Repair /></ProtectedRoute>} />
+           <Route path="/tasks" element={<ProtectedRoute><Tasks /></ProtectedRoute>} />
         </Route>
       </Routes>
     </BrowserRouter>

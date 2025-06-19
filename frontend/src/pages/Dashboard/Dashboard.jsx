@@ -1,11 +1,21 @@
+import { Card, CardContent, Typography } from "@mui/material";
 
 
 const Dashboard = () => {
 
   return (
     <>
-      <h1>Dashboard Page</h1>
-       <h6>Dashboard</h6>
+      <Card>
+          <CardContent>
+            <Typography variant="h5" component="h3" fontWeight={600}>
+              Dashboard
+            </Typography>
+            <Typography variant="subtitle2" component="h6" color="textSecondary">
+              Dashboard 
+            </Typography>
+          </CardContent>
+        </Card>
+        <br />
         {/* <div className="main d-flex">          */}
           {/* <div className="right-content w-100"> */}
             <div className="row dashboardBoxWrapperRow">

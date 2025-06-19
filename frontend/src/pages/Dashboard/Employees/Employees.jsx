@@ -293,7 +293,7 @@ const Employees = () => {
     }
 
     return currentItems.map((Employee) => (
-      <Card key={Employee._id} className="Employee-card" sx={{ mb: 2, p: 2 }}>
+      <Card key={Employee._id} className="employee-card" sx={{ mb: 2, p: 2 }}>
         <Typography variant="h6">{Employee.employeeName}</Typography>
         <Typography variant="body2">
           <strong>Phone No:</strong> {Employee.phoneNo}
