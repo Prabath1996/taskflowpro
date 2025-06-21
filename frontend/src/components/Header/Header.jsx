@@ -39,7 +39,10 @@ const Header = () => {
 
  const handleLogout = () => {
     SessionManager.clearSession()
-    toast.success("Logged out successfully!")
+    toast.success("Logged out successfully!", {
+    position: "bottom-center",
+    style: { background: "#4caf50", color: "#fff" }
+  });
     navigate("/login")
     handleCloseMyAccDrop()
   }
