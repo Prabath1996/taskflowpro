@@ -1,3 +1,5 @@
+const dotenv=require('dotenv');
+dotenv.config({path:'./.env'});
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require('cors');
@@ -8,8 +10,8 @@ const employeeRoutes = require('./routes/employee');
 const warrantyRoutes = require('./routes/warranty');
 const repairRoutes = require('./routes/repair');
 const taskRoutes = require('./routes/task');
-const PORT = 5000;
 const app = express();
+const port = (process.env.SERVER_PORT || 5000);
 
 // Middleware
 app.use(cors());
@@ -17,9 +19,9 @@ app.use(bodyParser.json());
 
 
 //Connect to MongoDB
-const uri = "mongodb+srv://dbuser:ccU1umZwh4auNo4K@cluster0.8hpcduv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const DATABASE_URL = process.env.MONGODB_URL;
 
-mongoose.connect(uri, {useNewUrlParser: true,useUnifiedTopology: true,}); 
+mongoose.connect(DATABASE_URL, {useNewUrlParser: true,useUnifiedTopology: true,}); 
 const connection = mongoose.connection;
 
 connection.once("open", function() {
@@ -30,6 +32,10 @@ connection.once("open", function() {
   }
 });
 
+app.listen(port, () => {
+        console.log(`Server is running on port: ${port}`);
+    });
+    
 app.get("/",(req,res)=> 
     res.send("Server is Running")
 );
@@ -43,7 +49,4 @@ app.use('/api/warranty', warrantyRoutes);
 app.use('/api/repairs', repairRoutes);
 app.use('/api/tasks', taskRoutes);
 
-// Start Server
-app.listen(PORT,() => 
-    console.log(`Server is Running on PORT ${PORT}`)
-);
+
