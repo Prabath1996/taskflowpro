@@ -21,17 +21,22 @@ const Login = () => {
 
   const navigate = useNavigate();
 
-  const [data, setData] = useState({ email: '', password: '' });
+  const [data, setData] = useState({ email: "", password: "" });
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    const {email,password} = data
+    const { email, password } = data;
     try {
-      const {data} = await axios.post("https://taskflowpro-exop.vercel.app/api/users/login", {email,password});
+      const { data } = await axios.post(
+        "https://taskflowpro-exop.vercel.app/api/users/login",
+        { email, password }
+      );
 
       if (data.error) {
-        toast.error(data.error) 
-      
+        toast.error(data.error, {
+          position: "top-right",
+          style: { background: "#f44336", color: "#fff" },
+        });
       } else {
         // Store user session data
         SessionManager.setUserSession({
@@ -39,12 +44,14 @@ const Login = () => {
           name: data.username || email.split("@")[0],
           userId: data._id || Date.now().toString(),
           ...data,
-        })
-
+        });
 
         setData({});
-        toast.success('Login Successful. Welcome!')
-        navigate('/dashboard')
+        toast.success("Login Successful. Welcome!", {
+          position: "top-center",
+          style: { background: "#4caf50", color: "#fff" }
+        });
+        navigate("/dashboard");
       }
     } catch (error) {
       console.error(error);
@@ -80,7 +87,7 @@ const Login = () => {
                   placeholder="Enter Your Email"
                   onFocus={() => focusInput(0)}
                   onBlur={() => setInputIndex(null)}
-                  onChange={(e) =>setData({ ...data, email: e.target.value })}
+                  onChange={(e) => setData({ ...data, email: e.target.value })}
                 />
               </div>
 
@@ -101,7 +108,9 @@ const Login = () => {
                   placeholder="Enter Your Password"
                   onFocus={() => focusInput(1)}
                   onBlur={() => setInputIndex(null)}
-                  onChange={(e) => setData({ ...data, password: e.target.value })}
+                  onChange={(e) =>
+                    setData({ ...data, password: e.target.value })
+                  }
                 />
 
                 <span
@@ -136,22 +145,6 @@ const Login = () => {
           </div>
         </div>
       </section>
-
-      {/* <Snackbar
-        open={open.open}
-        autoHideDuration={6000}
-        onClose={handleClose}
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-      >
-        <Alert
-          onClose={handleClose}
-          severity={open.severity}
-          variant="filled"
-          sx={{ width: "100%" }}
-        >
-          {open.message}
-        </Alert>
-      </Snackbar> */}
     </>
   );
 };
