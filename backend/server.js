@@ -15,7 +15,7 @@ const port = (process.env.SERVER_PORT || 5000);
 
 // Middleware
 app.use(cors({
-  origin: ['https://taskflowpro-exop.vercel.app','http://localhost:3000'],
+  origin: ['https://taskflowpro-one.vercel.app','http://localhost:3000'],
   credentials: true,
 }));
 app.use(bodyParser.json());
