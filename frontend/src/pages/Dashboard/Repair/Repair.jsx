@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -19,108 +19,120 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
-} from "@mui/material"
-import { DatePicker } from "@mui/x-date-pickers/DatePicker"
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
-import { FaTools, FaEdit, FaSearch, FaEye } from "react-icons/fa"
-import { IoMdCloseCircle } from "react-icons/io"
-import { MdDelete } from "react-icons/md"
-import { GrFormPrevious, GrFormNext } from "react-icons/gr"
-import "./Repair.css"
-import axios from "axios"
-import toast from "react-hot-toast"
+} from "@mui/material";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { FaTools, FaEdit, FaSearch, FaEye } from "react-icons/fa";
+import { IoMdCloseCircle } from "react-icons/io";
+import { MdDelete } from "react-icons/md";
+import { GrFormPrevious, GrFormNext } from "react-icons/gr";
+import "./Repair.css";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 const Repair = () => {
-  const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
-  const isTablet = useMediaQuery(theme.breakpoints.down("md"))
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isTablet = useMediaQuery(theme.breakpoints.down("md"));
 
   // Loading state
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(true);
 
   // Dialog state
-  const [open, setOpen] = useState(false)
-  const handleOpen = () => setOpen(true)
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
 
   // View dialog state
-  const [viewOpen, setViewOpen] = useState(false)
-  const [viewRepair, setViewRepair] = useState(null)
+  const [viewOpen, setViewOpen] = useState(false);
+  const [viewRepair, setViewRepair] = useState(null);
 
   // Add these state variables after the existing ones
-  const [editMode, setEditMode] = useState(false)
-  const [selectedRepair, setSelectedRepair] = useState(null)
+  const [editMode, setEditMode] = useState(false);
+  const [selectedRepair, setSelectedRepair] = useState(null);
 
   // Repair data
-  const [formData, setFormData] = useState([])
+  const [formData, setFormData] = useState([]);
 
   // Customers data for dropdown
-  const [customers, setCustomers] = useState([])
+  const [customers, setCustomers] = useState([]);
 
-   // Employees data for dropdown
-  const [employees, setEmployees] = useState([])
+  // Employees data for dropdown
+  const [employees, setEmployees] = useState([]);
 
   // Helper function to format date for display
   const formatDateForDisplay = (dateValue) => {
-    if (!dateValue) return ""
+    if (!dateValue) return "";
 
     // If it's already a string in YYYY-MM-DD format, return as is
-    if (typeof dateValue === "string" && /^\d{4}-\d{2}-\d{2}$/.test(dateValue)) {
-      return dateValue
+    if (
+      typeof dateValue === "string" &&
+      /^\d{4}-\d{2}-\d{2}$/.test(dateValue)
+    ) {
+      return dateValue;
     }
 
     // If Date is a Date object, convert to YYYY-MM-DD
     if (dateValue instanceof Date) {
-      return dateValue.toISOString().split("T")[0]
+      return dateValue.toISOString().split("T")[0];
     }
 
     // Convert if date is a ISO String
     if (typeof dateValue === "string") {
       try {
-        const date = new Date(dateValue)
-        return date.toISOString().split("T")[0]
+        const date = new Date(dateValue);
+        return date.toISOString().split("T")[0];
       } catch (error) {
-        return dateValue
+        return dateValue;
       }
     }
 
-    return String(dateValue)
-  }
+    return String(dateValue);
+  };
 
   //get data from database
   useEffect(() => {
     const fetchData = async () => {
-      setIsLoading(true)
+      setIsLoading(true);
       try {
         // Fetch repair data
-        const repairResponse = await axios.get("https://taskflowpro-exop.vercel.app/api/repairs/getRepairs")
+        const repairResponse = await axios.get(
+          "https://taskflowpro-exop.vercel.app/api/repairs/getRepairs"
+        );
         if (repairResponse.status === 200) {
-          console.log("Repair data fetched successfully:", repairResponse.data)
-          setFormData(repairResponse.data)
+          console.log("Repair data fetched successfully:");
+          setFormData(repairResponse.data);
         }
 
         // Fetch customer data for dropdown
-        const customerResponse = await axios.get("https://taskflowpro-exop.vercel.app/api/customers/getCustomers")
+        const customerResponse = await axios.get(
+          "https://taskflowpro-exop.vercel.app/api/customers/getCustomers"
+        );
         if (customerResponse.status === 200) {
-          console.log("Customer data fetched successfully:", customerResponse.data)
-          setCustomers(customerResponse.data)
+          console.log("Customer data fetched successfully:");
+          setCustomers(customerResponse.data);
         }
 
-       // Fetch employee data for dropdown
-        const employeeResponse = await axios.get("https://taskflowpro-exop.vercel.app/api/employees/getEmployees")
+        // Fetch employee data for dropdown
+        const employeeResponse = await axios.get(
+          "https://taskflowpro-exop.vercel.app/api/employees/getEmployees"
+        );
         if (employeeResponse.status === 200) {
-          console.log("Employee data fetched successfully:", employeeResponse.data)
-          setEmployees(employeeResponse.data)
+          console.log("Employee data fetched successfully:");
+          setEmployees(employeeResponse.data);
         }
       } catch (error) {
-        console.error("Error fetching data:", error)
-        toast.error("Failed to load data", { position: "bottom-left" })
+        console.error("Error fetching data:", error);
+        toast.error("Failed to load data", {
+          position: "top-right",
+          style: { background: "#f44336", color: "#fff" },
+        });
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
-    }
-    fetchData()
-  }, [])
+    };
+    fetchData();
+  }, []);
 
   //Add Repair
   const [data, setData] = useState({
@@ -133,25 +145,40 @@ const Repair = () => {
     itemInDate: new Date(),
     itemOutDate: null,
     status: "Pending",
-  })
+  });
 
   // Loading state for add/update operations
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleAddRepair = async (e) => {
-    e.preventDefault()
-    setIsSubmitting(true)
+    e.preventDefault();
+    setIsSubmitting(true);
 
-    const { itemName, modelNo, serialNo, fault, customerName, recievedBy, itemInDate, itemOutDate, status } = data
+    const {
+      itemName,
+      modelNo,
+      serialNo,
+      fault,
+      customerName,
+      recievedBy,
+      itemInDate,
+      itemOutDate,
+      status,
+    } = data;
 
     // Convert Date objects to ISO strings
-    const formattedItemInDate = itemInDate ? itemInDate.toISOString().split("T")[0] : ""
-    const formattedItemOutDate = itemOutDate ? itemOutDate.toISOString().split("T")[0] : ""
+    const formattedItemInDate = itemInDate
+      ? itemInDate.toISOString().split("T")[0]
+      : "";
+    const formattedItemOutDate = itemOutDate
+      ? itemOutDate.toISOString().split("T")[0]
+      : "";
 
     try {
       if (editMode && selectedRepair) {
         // Update existing Repair
-        const response = await axios.put(`https://taskflowpro-exop.vercel.app/api/repairs/updateRepairs/${selectedRepair._id}`,
+        const response = await axios.put(
+          `https://taskflowpro-exop.vercel.app/api/repairs/updateRepairs/${selectedRepair._id}`,
           {
             itemName,
             modelNo,
@@ -162,11 +189,14 @@ const Repair = () => {
             itemInDate: formattedItemInDate,
             itemOutDate: formattedItemOutDate,
             status,
-          },
-        )
+          }
+        );
 
         if (response.data.error) {
-          toast.error(response.data.error, { position: "bottom-left" })
+          toast.error(response.data.error, {
+            position: "top-right",
+            style: { background: "#f44336", color: "#fff" },
+          });
         } else {
           // Update the Repair in the local state
           setFormData((prev) =>
@@ -184,43 +214,58 @@ const Repair = () => {
                     itemOutDate,
                     status,
                   }
-                : repair,
-            ),
-          )
-          toast.success("Repair Updated Successfully", { position: "bottom-left" })
-          handleClose()
-          resetForm()
+                : repair
+            )
+          );
+          toast.success("Repair Updated Successfully", {
+            position: "top-right",
+            style: { background: "#4caf50", color: "#fff" },
+          });
+          handleClose();
+          resetForm();
         }
       } else {
         // Add new Repair
-        const { data: responseData } = await axios.post("https://taskflowpro-exop.vercel.app/api/repairs/addRepairs", {
-          itemName,
-          modelNo,
-          serialNo,
-          fault,
-          customerName,
-          recievedBy,
-          itemInDate: formattedItemInDate,
-          itemOutDate: formattedItemOutDate,
-          status,
-        })
+        const { data: responseData } = await axios.post(
+          "https://taskflowpro-exop.vercel.app/api/repairs/addRepairs",
+          {
+            itemName,
+            modelNo,
+            serialNo,
+            fault,
+            customerName,
+            recievedBy,
+            itemInDate: formattedItemInDate,
+            itemOutDate: formattedItemOutDate,
+            status,
+          }
+        );
 
         if (responseData.error) {
-          toast.error(responseData.error, { position: "bottom-left" })
+          toast.error(responseData.error, {
+            position: "top-right",
+            style: { background: "#f44336", color: "#fff" },
+          });
         } else {
-          resetForm()
-          toast.success("Repair Added Successfully", { position: "bottom-left" })
-          setFormData((prev) => [...prev, responseData])
-          handleClose()
+          resetForm();
+          toast.success("Repair Added Successfully", {
+            position: "top-right",
+            style: { background: "#4caf50", color: "#fff" },
+          });
+          setFormData((prev) => [...prev, responseData]);
+          handleClose();
         }
       }
     } catch (error) {
-      console.log(error)
-      toast.error("Operation failed", { position: "bottom-left" })
+      console.log(error);
+      toast.error("Operation failed", {
+        position: "top-right",
+        style: { background: "#f44336", color: "#fff" },
+      });
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   // Reset form function
   const resetForm = () => {
@@ -234,14 +279,14 @@ const Repair = () => {
       itemInDate: new Date(),
       itemOutDate: null,
       status: "Pending",
-    })
-    setEditMode(false)
-    setSelectedRepair(null)
-  }
+    });
+    setEditMode(false);
+    setSelectedRepair(null);
+  };
 
   // Handle edit Repair
   const handleEditRepair = (repair) => {
-    setSelectedRepair(repair)
+    setSelectedRepair(repair);
     setData({
       itemName: repair.itemName,
       modelNo: repair.modelNo,
@@ -252,49 +297,62 @@ const Repair = () => {
       itemInDate: repair.itemInDate ? new Date(repair.itemInDate) : new Date(),
       itemOutDate: repair.itemOutDate ? new Date(repair.itemOutDate) : null,
       status: repair.status || "Pending",
-    })
-    setEditMode(true)
-    setOpen(true)
-  }
+    });
+    setEditMode(true);
+    setOpen(true);
+  };
 
   // Handle view repair
   const handleViewRepair = (repair) => {
-    setViewRepair(repair)
-    setViewOpen(true)
-  }
+    setViewRepair(repair);
+    setViewOpen(true);
+  };
 
   // Handle delete Repair
-  const [isDeletingId, setIsDeletingId] = useState(null)
+  const [isDeletingId, setIsDeletingId] = useState(null);
 
   const handleDeleteRepair = async (repairId) => {
     if (window.confirm("Are you sure you want to delete this repair record?")) {
-      setIsDeletingId(repairId)
+      setIsDeletingId(repairId);
       try {
-        const response = await axios.delete(`https://taskflowpro-exop.vercel.app/api/repairs/deleteRepairs/${repairId}`)
+        const response = await axios.delete(
+          `https://taskflowpro-exop.vercel.app/api/repairs/deleteRepairs/${repairId}`
+        );
 
         if (response.data.error) {
-          toast.error(response.data.error, { position: "bottom-left" })
+          toast.error(response.data.error, {
+            position: "top-right",
+            style: { background: "#f44336", color: "#fff" },
+          });
         } else {
           // Remove Repair from local state
-          setFormData((prev) => prev.filter((repair) => repair._id !== repairId))
-          toast.success("Repair Record Deleted Successfully", { position: "bottom-left" })
+          setFormData((prev) =>
+            prev.filter((repair) => repair._id !== repairId)
+          );
+          toast.success("Repair Record Deleted Successfully", {
+            position: "top-right",
+            style: { background: "#4caf50", color: "#fff" },
+          });
         }
       } catch (error) {
-        console.log(error)
-        toast.error("Failed to delete repair record", { position: "bottom-left" })
+        console.log(error);
+        toast.error("Failed to delete repair record", {
+          position: "top-right",
+          style: { background: "#f44336", color: "#fff" },
+        });
       } finally {
-        setIsDeletingId(null)
+        setIsDeletingId(null);
       }
     }
-  }
+  };
 
   // Search state
-  const [searchTerm, setSearchTerm] = useState("")
-  const [filteredRepairs, setFilteredRepairs] = useState([])
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredRepairs, setFilteredRepairs] = useState([]);
 
   // Pagination state
-  const [currentPage, setCurrentPage] = useState(1)
-  const itemsPerPage = 5
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
   // Filter Repairs based on search term
   useEffect(() => {
@@ -303,37 +361,39 @@ const Repair = () => {
         repairRec.itemName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         repairRec.modelNo?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         repairRec.serialNo?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        repairRec.customerName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        repairRec.customerName
+          ?.toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
         repairRec.fault?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        repairRec.status?.toLowerCase().includes(searchTerm.toLowerCase()),
-    )
-    setFilteredRepairs(results)
-    setCurrentPage(1) // Reset to first page when search changes
-  }, [searchTerm, formData])
+        repairRec.status?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredRepairs(results);
+    setCurrentPage(1); // Reset to first page when search changes
+  }, [searchTerm, formData]);
 
   // Handle search input change
   const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value)
-  }
+    setSearchTerm(e.target.value);
+  };
 
   // Calculate pagination
-  const totalItems = filteredRepairs.length
-  const totalPages = Math.ceil(totalItems / itemsPerPage)
-  const indexOfLastItem = currentPage * itemsPerPage
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage
-  const currentItems = filteredRepairs.slice(indexOfFirstItem, indexOfLastItem)
+  const totalItems = filteredRepairs.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredRepairs.slice(indexOfFirstItem, indexOfLastItem);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1)
+      setCurrentPage(currentPage + 1);
     }
-  }
+  };
 
   const handlePrevPage = () => {
     if (currentPage > 1) {
-      setCurrentPage(currentPage - 1)
+      setCurrentPage(currentPage - 1);
     }
-  }
+  };
 
   // Render Repair cards for mobile view
   const renderRepairCards = () => {
@@ -353,10 +413,12 @@ const Repair = () => {
             No repair records found
           </Typography>
           <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
-            {searchTerm ? "Try adjusting your search criteria" : "Add your first repair record to get started"}
+            {searchTerm
+              ? "Try adjusting your search criteria"
+              : "Add your first repair record to get started"}
           </Typography>
         </Box>
-      )
+      );
     }
 
     return currentItems.map((repair) => (
@@ -376,7 +438,11 @@ const Repair = () => {
         </Typography>
         <Typography variant="body2">
           <strong>Status:</strong>{" "}
-          <span className={`status-badge ${repair.status?.toLowerCase().replace(/\s/g, "")  || "pending"}`}>
+          <span
+            className={`status-badge ${
+              repair.status?.toLowerCase().replace(/\s/g, "") || "pending"
+            }`}
+          >
             {repair.status || "Pending"}
           </span>
         </Typography>
@@ -384,11 +450,13 @@ const Repair = () => {
           <strong>Received By:</strong> {repair.recievedBy}
         </Typography>
         <Typography variant="body2">
-          <strong>Item In Date:</strong> {formatDateForDisplay(repair.itemInDate)}
+          <strong>Item In Date:</strong>{" "}
+          {formatDateForDisplay(repair.itemInDate)}
         </Typography>
         {repair.itemOutDate && (
           <Typography variant="body2">
-            <strong>Item Out Date:</strong> {formatDateForDisplay(repair.itemOutDate) || "Not Set"}
+            <strong>Item Out Date:</strong>{" "}
+            {formatDateForDisplay(repair.itemOutDate) || "Not Set"}
           </Typography>
         )}
         <Box sx={{ display: "flex", gap: 1, mt: 2, flexWrap: "wrap" }}>
@@ -419,15 +487,21 @@ const Repair = () => {
             variant="outlined"
             color="error"
             size="small"
-            startIcon={isDeletingId === repair._id ? <CircularProgress size={16} color="error" /> : <MdDelete />}
+            startIcon={
+              isDeletingId === repair._id ? (
+                <CircularProgress size={16} color="error" />
+              ) : (
+                <MdDelete />
+              )
+            }
             disabled={isDeletingId === repair._id}
           >
             {isDeletingId === repair._id ? "Deleting..." : "Delete"}
           </Button>
         </Box>
       </Card>
-    ))
-  }
+    ));
+  };
 
   // Render Repair table for desktop view
   const renderRepairTable = () => {
@@ -451,12 +525,21 @@ const Repair = () => {
           <tbody>
             {currentItems.length === 0 ? (
               <tr>
-                <td colSpan={isTablet ? "6" : "9"} style={{ textAlign: "center", padding: "40px" }}>
+                <td
+                  colSpan={isTablet ? "6" : "9"}
+                  style={{ textAlign: "center", padding: "40px" }}
+                >
                   <Typography variant="h6" color="textSecondary">
                     No repair records found
                   </Typography>
-                  <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
-                    {searchTerm ? "Try adjusting your search criteria" : "Add your first repair record to get started"}
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    sx={{ mt: 1 }}
+                  >
+                    {searchTerm
+                      ? "Try adjusting your search criteria"
+                      : "Add your first repair record to get started"}
                   </Typography>
                 </td>
               </tr>
@@ -471,14 +554,23 @@ const Repair = () => {
                     {!isTablet && <td>{repair.fault}</td>}
                     <td>
                       <span
-                        className={`status-badge ${repair.status?.toLowerCase().replace(/\s/g, "")  || "pending"}`}
+                        className={`status-badge ${
+                          repair.status?.toLowerCase().replace(/\s/g, "") ||
+                          "pending"
+                        }`}
                       >
                         {repair.status || "Pending"}
                       </span>
                     </td>
                     {!isTablet && <td>{repair.recievedBy}</td>}
-                    {!isTablet && <td>{formatDateForDisplay(repair.itemInDate)}</td>}
-                     {!isTablet && <td>{formatDateForDisplay(repair.itemOutDate)|| "Not Set"}</td>}
+                    {!isTablet && (
+                      <td>{formatDateForDisplay(repair.itemInDate)}</td>
+                    )}
+                    {!isTablet && (
+                      <td>
+                        {formatDateForDisplay(repair.itemOutDate) || "Not Set"}
+                      </td>
+                    )}
                     <td>
                       <div className="actions">
                         <Button
@@ -500,7 +592,7 @@ const Repair = () => {
                           disabled={isDeletingId === repair._id}
                           sx={{ mr: 1 }}
                         >
-                           {!isTablet && "Edit"}
+                          {!isTablet && "Edit"}
                         </Button>
                         <Button
                           onClick={() => handleDeleteRepair(repair._id)}
@@ -508,33 +600,40 @@ const Repair = () => {
                           color="error"
                           size={isTablet ? "small" : "medium"}
                           startIcon={
-                            isDeletingId === repair._id ? <CircularProgress size={16} color="error" /> : <MdDelete />
+                            isDeletingId === repair._id ? (
+                              <CircularProgress size={16} color="error" />
+                            ) : (
+                              <MdDelete />
+                            )
                           }
                           disabled={isDeletingId === repair._id}
                         >
-                          {!isTablet && (isDeletingId === repair._id ? "Deleting..." : "Delete")}
+                          {!isTablet &&
+                            (isDeletingId === repair._id
+                              ? "Deleting..."
+                              : "Delete")}
                         </Button>
                       </div>
                     </td>
                   </tr>
-                )
+                );
               })
             )}
           </tbody>
         </table>
       </div>
-    )
-  }
+    );
+  };
 
   const handleClose = () => {
-    setOpen(false)
-    resetForm()
-  }
+    setOpen(false);
+    resetForm();
+  };
 
   const handleViewClose = () => {
-    setViewOpen(false)
-    setViewRepair(null)
-  }
+    setViewOpen(false);
+    setViewRepair(null);
+  };
 
   // Loading screen component
   const LoadingScreen = () => (
@@ -553,7 +652,7 @@ const Repair = () => {
         Loading repair data...
       </Typography>
     </Box>
-  )
+  );
 
   return (
     <>
@@ -563,7 +662,11 @@ const Repair = () => {
             <Typography variant="h5" component="h3" fontWeight={600}>
               Repair Management
             </Typography>
-            <Typography variant="subtitle2" component="h6" color="textSecondary">
+            <Typography
+              variant="subtitle2"
+              component="h6"
+              color="textSecondary"
+            >
               Dashboard / Repairs
             </Typography>
           </CardContent>
@@ -575,7 +678,12 @@ const Repair = () => {
         <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
           <DialogTitle>
             {editMode ? "Edit Repair Record" : "Add Repair Record"}
-            <IconButton style={{ float: "right" }} onClick={handleClose} color="default" disabled={isSubmitting}>
+            <IconButton
+              style={{ float: "right" }}
+              onClick={handleClose}
+              color="default"
+              disabled={isSubmitting}
+            >
               <IoMdCloseCircle />
             </IconButton>
           </DialogTitle>
@@ -587,7 +695,9 @@ const Repair = () => {
                   autoFocus
                   type="text"
                   value={data.itemName}
-                  onChange={(e) => setData({ ...data, itemName: e.target.value })}
+                  onChange={(e) =>
+                    setData({ ...data, itemName: e.target.value })
+                  }
                   label="Item Name"
                   variant="outlined"
                   fullWidth
@@ -599,7 +709,9 @@ const Repair = () => {
                   label="Model No"
                   type="text"
                   value={data.modelNo}
-                  onChange={(e) => setData({ ...data, modelNo: e.target.value })}
+                  onChange={(e) =>
+                    setData({ ...data, modelNo: e.target.value })
+                  }
                   variant="outlined"
                   fullWidth
                   margin="normal"
@@ -610,7 +722,9 @@ const Repair = () => {
                   label="Serial No"
                   type="text"
                   value={data.serialNo}
-                  onChange={(e) => setData({ ...data, serialNo: e.target.value })}
+                  onChange={(e) =>
+                    setData({ ...data, serialNo: e.target.value })
+                  }
                   variant="outlined"
                   fullWidth
                   margin="normal"
@@ -638,30 +752,42 @@ const Repair = () => {
                     id="customer-select"
                     value={data.customerName}
                     label="Customer"
-                    onChange={(e) => setData({ ...data, customerName: e.target.value })}
+                    onChange={(e) =>
+                      setData({ ...data, customerName: e.target.value })
+                    }
                     disabled={isSubmitting}
                   >
                     {customers.map((customer) => (
-                      <MenuItem key={customer._id} value={customer.customerName}>
+                      <MenuItem
+                        key={customer._id}
+                        value={customer.customerName}
+                      >
                         {customer.customerName}
                       </MenuItem>
                     ))}
                   </Select>
                 </FormControl>
 
-                   {/* Employee Selection */}
+                {/* Employee Selection */}
                 <FormControl fullWidth margin="normal" size="small">
-                  <InputLabel id="employee-select-label">Received By</InputLabel>
+                  <InputLabel id="employee-select-label">
+                    Received By
+                  </InputLabel>
                   <Select
                     labelId="employee-select-label"
                     id="employee-select"
                     value={data.recievedBy}
                     label="Received By"
-                    onChange={(e) => setData({ ...data, recievedBy: e.target.value })}
+                    onChange={(e) =>
+                      setData({ ...data, recievedBy: e.target.value })
+                    }
                     disabled={isSubmitting}
                   >
                     {employees.map((employee) => (
-                      <MenuItem key={employee._id} value={employee.employeeName}>
+                      <MenuItem
+                        key={employee._id}
+                        value={employee.employeeName}
+                      >
                         {employee.employeeName}
                       </MenuItem>
                     ))}
@@ -676,7 +802,9 @@ const Repair = () => {
                     id="status-select"
                     value={data.status}
                     label="Status"
-                    onChange={(e) => setData({ ...data, status: e.target.value })}
+                    onChange={(e) =>
+                      setData({ ...data, status: e.target.value })
+                    }
                     disabled={isSubmitting}
                   >
                     <MenuItem value="Pending">Pending</MenuItem>
@@ -686,11 +814,20 @@ const Repair = () => {
                 </FormControl>
 
                 {/* Date Pickers */}
-                <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 2 }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 2,
+                    mt: 2,
+                  }}
+                >
                   <DatePicker
                     label="Item In Date"
                     value={data.itemInDate}
-                    onChange={(newValue) => setData({ ...data, itemInDate: newValue })}
+                    onChange={(newValue) =>
+                      setData({ ...data, itemInDate: newValue })
+                    }
                     slotProps={{
                       textField: {
                         size: "small",
@@ -705,7 +842,9 @@ const Repair = () => {
                   <DatePicker
                     label="Item Out Date"
                     value={data.itemOutDate}
-                    onChange={(newValue) => setData({ ...data, itemOutDate: newValue })}
+                    onChange={(newValue) =>
+                      setData({ ...data, itemOutDate: newValue })
+                    }
                     slotProps={{
                       textField: {
                         size: "small",
@@ -724,9 +863,19 @@ const Repair = () => {
                     color="primary"
                     sx={{ alignSelf: "flex-start", mt: 2 }}
                     disabled={isSubmitting}
-                    startIcon={isSubmitting && <CircularProgress size={16} color="inherit" />}
+                    startIcon={
+                      isSubmitting && (
+                        <CircularProgress size={16} color="inherit" />
+                      )
+                    }
                   >
-                    {isSubmitting ? (editMode ? "Updating..." : "Adding...") : editMode ? "Update" : "Add"}
+                    {isSubmitting
+                      ? editMode
+                        ? "Updating..."
+                        : "Adding..."
+                      : editMode
+                      ? "Update"
+                      : "Add"}
                   </Button>
                 </Box>
               </form>
@@ -735,17 +884,32 @@ const Repair = () => {
         </Dialog>
 
         {/* View Repair Dialog */}
-        <Dialog open={viewOpen} onClose={handleViewClose} fullWidth maxWidth="md">
+        <Dialog
+          open={viewOpen}
+          onClose={handleViewClose}
+          fullWidth
+          maxWidth="md"
+        >
           <DialogTitle>
             Repair Details
-            <IconButton style={{ float: "right" }} onClick={handleViewClose} color="default">
+            <IconButton
+              style={{ float: "right" }}
+              onClick={handleViewClose}
+              color="default"
+            >
               <IoMdCloseCircle />
             </IconButton>
           </DialogTitle>
           <DialogContent>
             {viewRepair && (
               <Box sx={{ mt: 2 }}>
-                <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" }, gap: 1 }}>
+                <Box
+                  sx={{
+                    display: "grid",
+                    gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
+                    gap: 1,
+                  }}
+                >
                   <Box>
                     <Typography variant="subtitle2" color="textSecondary">
                       Item Name
@@ -793,7 +957,10 @@ const Repair = () => {
                     <Typography
                       variant="body1"
                       sx={{ mb: 1 }}
-                      className={`status-badge ${viewRepair.status?.toLowerCase().replace(/\s/g, "")  || "pending"}`}
+                      className={`status-badge ${
+                        viewRepair.status?.toLowerCase().replace(/\s/g, "") ||
+                        "pending"
+                      }`}
                     >
                       {viewRepair.status || "Pending"}
                     </Typography>
@@ -811,7 +978,8 @@ const Repair = () => {
                       Item Out Date
                     </Typography>
                     <Typography variant="body1" sx={{ mb: 1 }}>
-                      {formatDateForDisplay(viewRepair.itemOutDate) || "Not set"}
+                      {formatDateForDisplay(viewRepair.itemOutDate) ||
+                        "Not set"}
                     </Typography>
                   </Box>
                 </Box>
@@ -819,7 +987,10 @@ const Repair = () => {
                   <Typography variant="subtitle2" color="textSecondary">
                     Fault Description
                   </Typography>
-                  <Typography variant="body1" sx={{ mt: 1, p: 2, bgcolor: "grey.50", borderRadius: 1 }}>
+                  <Typography
+                    variant="body1"
+                    sx={{ mt: 1, p: 2, bgcolor: "grey.50", borderRadius: 1 }}
+                  >
                     {viewRepair.fault}
                   </Typography>
                 </Box>
@@ -897,10 +1068,18 @@ const Repair = () => {
                   }}
                 >
                   <Box sx={{ display: "flex", gap: 1 }}>
-                    <Button variant="outlined" onClick={handlePrevPage} disabled={currentPage === 1}>
+                    <Button
+                      variant="outlined"
+                      onClick={handlePrevPage}
+                      disabled={currentPage === 1}
+                    >
                       <GrFormPrevious />
                     </Button>
-                    <Button variant="outlined" onClick={handleNextPage} disabled={currentPage === totalPages}>
+                    <Button
+                      variant="outlined"
+                      onClick={handleNextPage}
+                      disabled={currentPage === totalPages}
+                    >
                       <GrFormNext />
                     </Button>
                   </Box>
@@ -918,7 +1097,8 @@ const Repair = () => {
                       Page {currentPage} of {totalPages || 1}
                     </Typography>
                     <Typography variant="body2">
-                      Showing {Math.min(itemsPerPage, currentItems.length)} of {totalItems} items
+                      Showing {Math.min(itemsPerPage, currentItems.length)} of{" "}
+                      {totalItems} items
                     </Typography>
                   </Box>
                 </Box>
@@ -928,7 +1108,7 @@ const Repair = () => {
         </Card>
       </LocalizationProvider>
     </>
-  )
-}
+  );
+};
 
-export default Repair
+export default Repair;
