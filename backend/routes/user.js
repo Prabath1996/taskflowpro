@@ -1,11 +1,10 @@
-const express = require('express');
-const User = require('../models/User');
+const express = require("express");
+const User = require("../models/User");
 const router = express.Router();
-const bcrypt = require('bcrypt');
-
+const bcrypt = require("bcrypt");
 
 // Get all users
-router.get('/', async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const users = await User.find();
     res.json(users);
@@ -14,96 +13,99 @@ router.get('/', async (req, res) => {
   }
 });
 
-
 //Regiter User
-router.post('/signup', async (req,res)=> {
+router.post("/signup", async (req, res) => {
   try {
-    const { username,email, password,confirmPassword} = req.body;
+    const { username, email, password } = req.body;
     //Check if username was entered
-    if(!username){
+    if (!username) {
       return res.json({
-        error: 'Name is Required'
-      })
-    };
+        error: "Name is Required",
+      });
+    }
     //Check if email was entered
-    if(!email){
+    if (!email) {
       return res.json({
-        error: 'Email is Required'
-      })
-    };
-     //Check if Password is good
-    if(!password || password.length < 6){
+        error: "Email is Required",
+      });
+    }
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
       return res.json({
-        error: 'Password is Required and should be at least 6 characters long'
-      })
-    };
-    //Check password and confirmPassword are same
-    if(password !== confirmPassword){
+        error: "Invalid email format",
+      });
+    }
+    //Password validation
+    const strongPasswordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+    if (!password || !strongPasswordRegex.test(password)) {
       return res.json({
-        error: 'Password does not match'
-      })
+        error:
+          "Password must be at least 6 characters long and include uppercase, lowercase, number, and special character.",
+      });
     }
     //Check Email
-    const exist = await User.findOne({email});
-     //Check if username was entered
-    if(exist){
+    const exist = await User.findOne({ email });
+    //Check if username was entered
+    if (exist) {
       return res.json({
-        error: 'Email is taken already'
-      })
-    };
+        error: "Email is taken already",
+      });
+    }
 
     //Encrypt the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
     //Create User
     const user = await User.create({
-      username,email,password:hashedPassword
-    })
+      username,
+      email,
+      password: hashedPassword,
+    });
 
-    return res.json(user)
-
+    return res.json(user);
   } catch (error) {
-      console.log(error)
+    console.log(error);
   }
-})
-
+});
 
 // User login
-router.post('/login', async (req, res) => {
+router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
+
+    //Check if email was entered
+    if (!email) {
+      return res.json({
+        error: "Email is Required",
+      });
+    }
     //Check if user exist
     const user = await User.findOne({ email });
-    if(!user){
+    if (!user) {
       return res.json({
-        error: 'No user found'
-      })
+        error: "No user found",
+      });
     }
-       //Check if email was entered
-    if(!email){
+    //Check if password was entered
+    if (!password) {
       return res.json({
-        error: 'Email is Required'
-      })
-    };
-     //Check if Password is good
-    if(!password || password.length < 6){
-      return res.json({
-        error: 'Password is Required and should be at least 6 characters long'
-      })
-    };
+        error: "Password is Required",
+      });
+    }
     //Check if password match
-    const match = await bcrypt.compare(password, user.password)
-    if(match){
-      return res.json('password match')
-    }
-    else{
+    const match = await bcrypt.compare(password, user.password);
+    if (match) {
+      return res.json("password match");
+    } else {
       return res.json({
-        error: 'Password does not match'
-      })
+        error: "Password does not match",
+      });
     }
   } catch (error) {
-    console.log( error);  
-}
+    console.log(error);
+  }
 });
 
 module.exports = router;

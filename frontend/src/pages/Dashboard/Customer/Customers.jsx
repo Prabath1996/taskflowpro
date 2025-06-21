@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -15,53 +15,58 @@ import {
   useMediaQuery,
   useTheme,
   CircularProgress,
-} from "@mui/material"
-import { FaUserPlus, FaEdit, FaSearch } from "react-icons/fa"
-import { IoMdCloseCircle } from "react-icons/io"
-import { MdDelete } from "react-icons/md"
-import { GrFormPrevious, GrFormNext } from "react-icons/gr"
-import "./Customer.css"
-import axios from "axios"
-import toast from "react-hot-toast"
+} from "@mui/material";
+import { FaUserPlus, FaEdit, FaSearch } from "react-icons/fa";
+import { IoMdCloseCircle } from "react-icons/io";
+import { MdDelete } from "react-icons/md";
+import { GrFormPrevious, GrFormNext } from "react-icons/gr";
+import "./Customer.css";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 const Customers = () => {
-  const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
-  const isTablet = useMediaQuery(theme.breakpoints.down("md"))
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isTablet = useMediaQuery(theme.breakpoints.down("md"));
 
-    // Loading state
-  const [isLoading, setIsLoading] = useState(true)
+  // Loading state
+  const [isLoading, setIsLoading] = useState(true);
 
   // Dialog state
-  const [open, setOpen] = useState(false)
-  const handleOpen = () => setOpen(true)
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
 
   // Add these state variables after the existing ones
-  const [editMode, setEditMode] = useState(false)
-  const [selectedCustomer, setSelectedCustomer] = useState(null)
+  const [editMode, setEditMode] = useState(false);
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
 
   // Sample customer data
-  const [formData, setFormData] = useState([])
+  const [formData, setFormData] = useState([]);
 
   //get data from database
   useEffect(() => {
     const fetchData = async () => {
-      setIsLoading(true)
+      setIsLoading(true);
       try {
-        const response = await axios.get("https://taskflowpro-exop.vercel.app/api/customers/getCustomers")
+        const response = await axios.get(
+          "https://taskflowpro-exop.vercel.app/api/customers/getCustomers"
+        );
         if (response.status === 200) {
-          console.log("Customer data fetched successfully:", response.data)
-          setFormData(response.data)
+          console.log("Customer data fetched successfully:");
+          setFormData(response.data);
         }
       } catch (error) {
-        console.error("Error fetching customer data:", error)
-          toast.error("Failed to load employee data", { position: "bottom-left" })
+        console.error("Error fetching customer data:", error);
+        toast.error("Failed to load employee data", {
+          position: "top-right",
+          style: { background: "#f44336", color: "#fff" },
+        });
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
-    }
-    fetchData()
-  }, [])
+    };
+    fetchData();
+  }, []);
 
   //Add customer
   const [data, setData] = useState({
@@ -69,71 +74,94 @@ const Customers = () => {
     email: "",
     address: "",
     phoneNo: "",
-  })
+  });
 
-   // Loading state for add/update operations
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  // Loading state for add/update operations
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleAddCustomer = async (e) => {
-    e.preventDefault()
-    setIsSubmitting(true)
+    e.preventDefault();
+    setIsSubmitting(true);
 
-    const { customerName, email, address, phoneNo } = data
+    const { customerName, email, address, phoneNo } = data;
 
     try {
       if (editMode && selectedCustomer) {
-      
         // Update existing customer
-        const response = await axios.put(`https://taskflowpro-exop.vercel.app/api/customers/updateCustomers/${selectedCustomer._id}`, {
-          customerName,
-          email,
-          address,
-          phoneNo,
-        })
+        const response = await axios.put(
+          `https://taskflowpro-exop.vercel.app/api/customers/updateCustomers/${selectedCustomer._id}`,
+          {
+            customerName,
+            email,
+            address,
+            phoneNo,
+          }
+        );
 
         if (response.data.error) {
-          toast.error(response.data.error, { position: "bottom-left" })
+          toast.error(response.data.error, {
+            position: "top-right",
+            style: { background: "#f44336", color: "#fff" },
+          });
         } else {
           // Update the customer in the local state
           setFormData((prev) =>
             prev.map((customer) =>
-              customer._id === selectedCustomer._id ? { ...customer, customerName, email, address, phoneNo } : customer,
-            ),
-          )
-          toast.success("Customer Updated Successfully", { position: "bottom-left" })
-          handleClose()
-          resetForm()
+              customer._id === selectedCustomer._id
+                ? { ...customer, customerName, email, address, phoneNo }
+                : customer
+            )
+          );
+          toast.success("Customer Updated Successfully", {
+            position: "top-right",
+            style: { background: "#4caf50", color: "#fff" },
+          });
+          handleClose();
+          resetForm();
         }
       } else {
-        // Add new customer (existing code)
-        const { data: responseData } = await axios.post("https://taskflowpro-exop.vercel.app/api/customers/addCustomers", {
-          customerName,
-          email,
-          address,
-          phoneNo,
-        })
+        // Add new customer
+        const { data: responseData } = await axios.post(
+          "https://taskflowpro-exop.vercel.app/api/customers/addCustomers",
+          {
+            customerName,
+            email,
+            address,
+            phoneNo,
+          }
+        );
 
         if (responseData.error) {
-          toast.error(responseData.error, { position: "bottom-left" })
+          toast.error(responseData.error, {
+            position: "top-right",
+            style: { background: "#f44336", color: "#fff" },
+          });
         } else {
           setData({
             customerName: "",
             email: "",
             address: "",
             phoneNo: "",
-          })
-          toast.success("Customer Added Successfully", { position: "bottom-left" })
-          setFormData((prev) => [...prev, responseData])
-          handleClose()
+          });
+          toast.success("Customer Added Successfully", {
+            position: "top-right",
+            style: { background: "#4caf50", color: "#fff" },
+          });
+          setFormData((prev) => [...prev, responseData]);
+          handleClose();
+          resetForm();
         }
       }
     } catch (error) {
-      console.log(error)
-      toast.error("Operation failed", { position: "bottom-left" })
-      } finally {
-      setIsSubmitting(false)
+      console.log(error);
+      toast.error("Operation failed", {
+        position: "top-right",
+        style: { background: "#f44336", color: "#fff" },
+      });
+    } finally {
+      setIsSubmitting(false);
     }
-  }
+  };
 
   // Reset form function
   const resetForm = () => {
@@ -142,100 +170,117 @@ const Customers = () => {
       email: "",
       address: "",
       phoneNo: "",
-    })
-    setEditMode(false)
-    setSelectedCustomer(null)
-  }
+    });
+    setEditMode(false);
+    setSelectedCustomer(null);
+  };
 
   // Handle edit customer
   const handleEditCustomer = (customer) => {
-    setSelectedCustomer(customer)
+    setSelectedCustomer(customer);
     setData({
       customerName: customer.customerName,
       email: customer.email,
       address: customer.address,
       phoneNo: customer.phoneNo,
-    })
-    setEditMode(true)
-    setOpen(true)
-  }
+    });
+    setEditMode(true);
+    setOpen(true);
+  };
 
   // Handle delete customer
-  const [isDeletingId, setIsDeletingId] = useState(null)
+  const [isDeletingId, setIsDeletingId] = useState(null);
 
   const handleDeleteCustomer = async (customerId) => {
-    
     if (window.confirm("Are you sure you want to delete this customer?")) {
-      setIsDeletingId(customerId)
+      setIsDeletingId(customerId);
       try {
-        const response = await axios.delete(`https://taskflowpro-exop.vercel.app/api/customers/deleteCustomers/${customerId}`)
+        const response = await axios.delete(
+          `https://taskflowpro-exop.vercel.app/api/customers/deleteCustomers/${customerId}`
+        );
 
         if (response.data.error) {
-          toast.error(response.data.error, { position: "bottom-left" })
+          toast.error(data.error, {
+            position: "top-right",
+            style: { background: "#f44336", color: "#fff" },
+          });
         } else {
           // Remove customer from local state
-          setFormData((prev) => prev.filter((customer) => customer._id !== customerId))
-          toast.success("Customer Deleted Successfully", { position: "bottom-left" })
+          setFormData((prev) =>
+            prev.filter((customer) => customer._id !== customerId)
+          );
+          toast.success("Customer Deleted Successfully", {
+            position: "top-right",
+            style: { background: "#4caf50", color: "#fff" },
+          });
         }
       } catch (error) {
-        console.log(error)
-        toast.error("Failed to Delete customer", { position: "bottom-left" })
-      }finally {
-        setIsDeletingId(null)
+        console.log(error);
+        toast.error("Failed to Delete customer", {
+          position: "top-right",
+          style: { background: "#f44336", color: "#fff" },
+        });
+      } finally {
+        setIsDeletingId(null);
       }
     }
-  }
+  };
 
   //Update customer
 
   // Search state
-  const [searchTerm, setSearchTerm] = useState("")
-  const [filteredCustomers, setFilteredCustomers] = useState([])
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredCustomers, setFilteredCustomers] = useState([]);
 
   // Pagination state
-  const [currentPage, setCurrentPage] = useState(1)
-  const itemsPerPage = 5
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
   // Filter customers based on search term
   useEffect(() => {
     const results = formData.filter(
       (customerRec) =>
-        customerRec.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        customerRec.customerName
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
         customerRec.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
         customerRec.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        customerRec.phoneNo.includes(searchTerm),
-    )
-    setFilteredCustomers(results)
-    setCurrentPage(1) // Reset to first page when search changes
-  }, [searchTerm, formData])
+        customerRec.phoneNo.includes(searchTerm)
+    );
+    setFilteredCustomers(results);
+    setCurrentPage(1); // Reset to first page when search changes
+  }, [searchTerm, formData]);
 
   // Handle search input change
   const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value)
-  }
+    setSearchTerm(e.target.value);
+  };
 
   // Calculate pagination
-  const totalItems = filteredCustomers.length
-  const totalPages = Math.ceil(totalItems / itemsPerPage)
-  const indexOfLastItem = currentPage * itemsPerPage
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage
-  const currentItems = filteredCustomers.slice(indexOfFirstItem, indexOfLastItem)
+  const totalItems = filteredCustomers.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredCustomers.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1)
+      setCurrentPage(currentPage + 1);
     }
-  }
+  };
 
   const handlePrevPage = () => {
     if (currentPage > 1) {
-      setCurrentPage(currentPage - 1)
+      setCurrentPage(currentPage - 1);
     }
-  }
+  };
 
   // Render customer cards for mobile view
   const renderCustomerCards = () => {
-      if (currentItems.length === 0) {
+    if (currentItems.length === 0) {
       return (
         <Box
           sx={{
@@ -251,10 +296,12 @@ const Customers = () => {
             No customer found
           </Typography>
           <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
-            {searchTerm ? "Try adjusting your search criteria" : "Add your first customer to get started"}
+            {searchTerm
+              ? "Try adjusting your search criteria"
+              : "Add your first customer to get started"}
           </Typography>
         </Box>
-      )
+      );
     }
     return currentItems.map((customer) => (
       <Card key={customer._id} className="customer-card" sx={{ mb: 2, p: 2 }}>
@@ -276,7 +323,7 @@ const Customers = () => {
             color="success"
             size="small"
             startIcon={<FaEdit />}
-             disabled={isDeletingId === customer._id}
+            disabled={isDeletingId === customer._id}
           >
             Edit
           </Button>
@@ -286,15 +333,21 @@ const Customers = () => {
             variant="outlined"
             color="error"
             size="small"
-            startIcon={isDeletingId === customer._id ? <CircularProgress size={16} color="error" /> : <MdDelete />}
+            startIcon={
+              isDeletingId === customer._id ? (
+                <CircularProgress size={16} color="error" />
+              ) : (
+                <MdDelete />
+              )
+            }
             disabled={isDeletingId === customer._id}
           >
-             {isDeletingId === customer._id ? "Deleting..." : "Delete"}
+            {isDeletingId === customer._id ? "Deleting..." : "Delete"}
           </Button>
         </Box>
       </Card>
-    ))
-  }
+    ));
+  };
 
   // Render customer table for desktop view
   const renderCustomerTable = () => {
@@ -311,68 +364,83 @@ const Customers = () => {
             </tr>
           </thead>
           <tbody>
-             {currentItems.length === 0 ? (
+            {currentItems.length === 0 ? (
               <tr>
-                <td colSpan={isTablet ? "4" : "5"} style={{ textAlign: "center", padding: "40px" }}>
+                <td
+                  colSpan={isTablet ? "4" : "5"}
+                  style={{ textAlign: "center", padding: "40px" }}
+                >
                   <Typography variant="h6" color="textSecondary">
                     No customer found
                   </Typography>
-                  <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
-                    {searchTerm ? "Try adjusting your search criteria" : "Add your first customer to get started"}
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    sx={{ mt: 1 }}
+                  >
+                    {searchTerm
+                      ? "Try adjusting your search criteria"
+                      : "Add your first customer to get started"}
                   </Typography>
                 </td>
               </tr>
             ) : (
-            currentItems.map((customer) => {
-              return (
-                <tr key={customer._id}>
-                  <td>{customer.customerName}</td>
-                  {!isTablet && <td>{customer.address}</td>}
-                  <td>{customer.phoneNo}</td>
-                  {!isTablet && <td>{customer.email}</td>}
-                  <td>
-                    <div className="actions">
-                      <Button
-                        onClick={() => handleEditCustomer(customer)}
-                        variant="contained"
-                        color="success"
-                        size={isTablet ? "small" : "medium"}
-                        startIcon={<FaEdit />}
-                        disabled={isDeletingId === customer._id}
-                      >
-                        {!isTablet && "Edit"}
-                      </Button>
-                      <Button
-                        onClick={() => handleDeleteCustomer(customer._id)}
-                        variant="outlined"
-                        color="error"
-                        size={isTablet ? "small" : "medium"}
-                        startIcon={
-                          isDeletingId === customer._id ? <CircularProgress size={16} color="error" /> : <MdDelete />
-                        }
-                        disabled={isDeletingId === customer._id}
-                      >
-                        {!isTablet && (isDeletingId === customer._id ? 
-                        "Deleting..." : "Delete")}
-                      </Button>
-                    </div>
-                  </td>
-                </tr>
-              )
-            })
-          )}
+              currentItems.map((customer) => {
+                return (
+                  <tr key={customer._id}>
+                    <td>{customer.customerName}</td>
+                    {!isTablet && <td>{customer.address}</td>}
+                    <td>{customer.phoneNo}</td>
+                    {!isTablet && <td>{customer.email}</td>}
+                    <td>
+                      <div className="actions">
+                        <Button
+                          onClick={() => handleEditCustomer(customer)}
+                          variant="contained"
+                          color="success"
+                          size={isTablet ? "small" : "medium"}
+                          startIcon={<FaEdit />}
+                          disabled={isDeletingId === customer._id}
+                        >
+                          {!isTablet && "Edit"}
+                        </Button>
+                        <Button
+                          onClick={() => handleDeleteCustomer(customer._id)}
+                          variant="outlined"
+                          color="error"
+                          size={isTablet ? "small" : "medium"}
+                          startIcon={
+                            isDeletingId === customer._id ? (
+                              <CircularProgress size={16} color="error" />
+                            ) : (
+                              <MdDelete />
+                            )
+                          }
+                          disabled={isDeletingId === customer._id}
+                        >
+                          {!isTablet &&
+                            (isDeletingId === customer._id
+                              ? "Deleting..."
+                              : "Delete")}
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })
+            )}
           </tbody>
         </table>
       </div>
-    )
-  }
+    );
+  };
 
   const handleClose = () => {
-    setOpen(false)
-    resetForm()
-  }
+    setOpen(false);
+    resetForm();
+  };
 
-   // Loading screen component
+  // Loading screen component
   const LoadingScreen = () => (
     <Box
       sx={{
@@ -389,7 +457,7 @@ const Customers = () => {
         Loading customer data...
       </Typography>
     </Box>
-  )
+  );
 
   return (
     <>
@@ -410,8 +478,12 @@ const Customers = () => {
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
         <DialogTitle>
           {editMode ? "Edit Customer" : "Add Customer"}
-         <IconButton style={{ float: "right" }} onClick={handleClose} 
-         color="default" disabled={isSubmitting}>
+          <IconButton
+            style={{ float: "right" }}
+            onClick={handleClose}
+            color="default"
+            disabled={isSubmitting}
+          >
             <IoMdCloseCircle />
           </IconButton>
         </DialogTitle>
@@ -422,8 +494,10 @@ const Customers = () => {
                 size="small"
                 autoFocus
                 type="text"
-                value={data.customerName}
-                onChange={(e) => setData({ ...data, customerName: e.target.value })}
+                value={data.customerName || ""}
+                onChange={(e) =>
+                  setData({ ...data, customerName: e.target.value })
+                }
                 label="Customer Name"
                 variant="outlined"
                 fullWidth
@@ -434,7 +508,7 @@ const Customers = () => {
                 size="small"
                 label="Address"
                 type="text"
-                value={data.address}
+                value={data.address || ""}
                 onChange={(e) => setData({ ...data, address: e.target.value })}
                 variant="outlined"
                 fullWidth
@@ -445,7 +519,7 @@ const Customers = () => {
                 size="small"
                 label="Phone No"
                 type="text"
-                value={data.phoneNo}
+                value={data.phoneNo || ""}
                 onChange={(e) => setData({ ...data, phoneNo: e.target.value })}
                 variant="outlined"
                 fullWidth
@@ -455,26 +529,32 @@ const Customers = () => {
               <TextField
                 size="small"
                 label="Email"
-                type="email"
-                value={data.email}
+                type="text"
+                value={data.email || ""}
                 onChange={(e) => setData({ ...data, email: e.target.value })}
                 variant="outlined"
                 fullWidth
                 margin="normal"
                 disabled={isSubmitting}
               />
-              <Button 
-              type="submit" 
-              className="btn-lg" 
-              variant="contained" 
-              color="primary" 
-              sx={{ mt: 2 }}
-              disabled={isSubmitting}
-              startIcon={isSubmitting && <CircularProgress size={16} 
-              color="inherit" />}
+              <Button
+                type="submit"
+                className="btn-lg"
+                variant="contained"
+                color="primary"
+                sx={{ mt: 2 }}
+                disabled={isSubmitting}
+                startIcon={
+                  isSubmitting && <CircularProgress size={16} color="inherit" />
+                }
               >
-               {isSubmitting ? (editMode ? "Updating..." : 
-               "Adding...") : editMode ? "Update" : "Add"}
+                {isSubmitting
+                  ? editMode
+                    ? "Updating..."
+                    : "Adding..."
+                  : editMode
+                  ? "Update"
+                  : "Add"}
               </Button>
             </form>
           </Stack>
@@ -504,7 +584,7 @@ const Customers = () => {
               sx={{ maxWidth: isMobile ? "100%" : "300px" }}
               onChange={handleSearchChange}
               value={searchTerm}
-               disabled={isLoading}
+              disabled={isLoading}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -520,7 +600,7 @@ const Customers = () => {
               variant="contained"
               onClick={handleOpen}
               startIcon={<FaUserPlus />}
-               disabled={isLoading}
+              disabled={isLoading}
               sx={{
                 whiteSpace: "nowrap",
                 minWidth: isMobile ? "100%" : "auto",
@@ -529,59 +609,67 @@ const Customers = () => {
               Add Customer
             </Button>
           </Box>
-          
-           {/* Loading Screen or Employee List */}
+
+          {/* Loading Screen or Employee List */}
           {isLoading ? (
             <LoadingScreen />
           ) : (
-          <>
-          
-          {/* Customer List - Table or Cards based on screen size */}
-          {isMobile ? renderCustomerCards() : renderCustomerTable()}
+            <>
+              {/* Customer List - Table or Cards based on screen size */}
+              {isMobile ? renderCustomerCards() : renderCustomerTable()}
 
-          {/* Pagination Controls */}
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: isMobile ? "column" : "row",
-              justifyContent: "space-between",
-              alignItems: isMobile ? "center" : "center",
-              gap: 2,
-              mt: 3,
-            }}
-          >
-            <Box sx={{ display: "flex", gap: 1 }}>
-              <Button variant="outlined" onClick={handlePrevPage} disabled={currentPage === 1}>
-                <GrFormPrevious />
-              </Button>
-              <Button variant="outlined" onClick={handleNextPage} disabled={currentPage === totalPages}>
-                <GrFormNext />
-              </Button>
-            </Box>
+              {/* Pagination Controls */}
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: isMobile ? "column" : "row",
+                  justifyContent: "space-between",
+                  alignItems: isMobile ? "center" : "center",
+                  gap: 2,
+                  mt: 3,
+                }}
+              >
+                <Box sx={{ display: "flex", gap: 1 }}>
+                  <Button
+                    variant="outlined"
+                    onClick={handlePrevPage}
+                    disabled={currentPage === 1}
+                  >
+                    <GrFormPrevious />
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    onClick={handleNextPage}
+                    disabled={currentPage === totalPages}
+                  >
+                    <GrFormNext />
+                  </Button>
+                </Box>
 
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: isMobile ? "column" : "row",
-                alignItems: "center",
-                gap: isMobile ? 1 : 3,
-                fontSize: "0.875rem",
-              }}
-            >
-              <Typography variant="body2">
-                Page {currentPage} of {totalPages || 1}
-              </Typography>
-              <Typography variant="body2">
-                Showing {Math.min(itemsPerPage, currentItems.length)} of {totalItems} items
-              </Typography>
-            </Box>
-          </Box>
-           </>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: isMobile ? "column" : "row",
+                    alignItems: "center",
+                    gap: isMobile ? 1 : 3,
+                    fontSize: "0.875rem",
+                  }}
+                >
+                  <Typography variant="body2">
+                    Page {currentPage} of {totalPages || 1}
+                  </Typography>
+                  <Typography variant="body2">
+                    Showing {Math.min(itemsPerPage, currentItems.length)} of{" "}
+                    {totalItems} items
+                  </Typography>
+                </Box>
+              </Box>
+            </>
           )}
         </CardContent>
       </Card>
     </>
-  )
-}
+  );
+};
 
-export default Customers
+export default Customers;

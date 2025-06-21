@@ -10,7 +10,7 @@ import Button from "@mui/material/Button";
 import { FaCircleUser } from "react-icons/fa6";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import toast from 'react-hot-toast';
+import toast from "react-hot-toast";
 
 const Signup = () => {
   const [inputIndex, setInputIndex] = useState(null);
@@ -21,47 +21,60 @@ const Signup = () => {
     setInputIndex(index);
   };
 
-const [data, setData] = useState({
-        username: '',
-        email: '',
-        password: '',
-        confirmPassword: ''
-    })
-const navigate = useNavigate();
-
+  const [data, setData] = useState({
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const {username,email,password,confirmPassword} = data
-    try {
-      const {data} = await axios.post('https://taskflowpro-exop.vercel.app/api/users/signup',{username,email,password,confirmPassword})
+    const { username, email, password, confirmPassword } = data;
 
-      if(data.error){
-        toast.error(data.error,{position:"bottom-left"}) 
-
-      }else{
-        setData({})
-        toast.success('User Registration Successful',{position:"bottom-left"})
-        navigate('/login')
-      }
-
-    } catch (error) {
-      console.log(error)
+    // Frontend validation for confirmPassword
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match", {
+        position: "top-right",
+        style: { background: "#f44336", color: "#fff" },
+      });
+      return;
     }
 
-  };
+    try {
+      const { data } = await axios.post(
+        "https://taskflowpro-exop.vercel.app/api/users/signup",
+        { username, email, password }
+      );
 
+      if (data.error) {
+        toast.error(data.error, {
+          position: "top-right",
+          style: { background: "#f44336", color: "#fff" },
+        });
+      } else {
+        setData({});
+        toast.success("User Registration Successful", {
+          position: "top-right",
+          style: { background: "#4caf50", color: "#fff" },
+        });
+        navigate("/login");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <>
       <img src={backgroundImg} alt="background-image" className="loginBG" />
       <section className="loginSection signUpSection">
         <div className="row">
-
           <div className="col-md-8 d-flex align-items-center flex-column justify-content-center part1">
-                <h1>Get it Done, Get it Right, Get it Fast</h1>
-                <p>Solution for Service Center Operations</p>
+            <h1>Get it Done, Get it Right, Get it Fast</h1>
+            <p>Solution for Service Center Operations</p>
           </div>
 
           <div className="col-md-4 pr-0">
@@ -73,7 +86,7 @@ const navigate = useNavigate();
 
               <div className="wrapper mt-3 card border">
                 <form onSubmit={handleSubmit}>
-                      <div
+                  <div
                     className={`form-group position-relative ${
                       inputIndex === 0 && "focus"
                     }`}
@@ -84,12 +97,14 @@ const navigate = useNavigate();
                     <input
                       type="text"
                       name="username"
-                      value={data.username}
+                      value={data.username || ""}
                       className="form-control"
                       placeholder="Enter Your Username"
                       onFocus={() => focusInput(0)}
                       onBlur={() => setInputIndex(null)}
-                      onChange={(e) => setData({...data,username:e.target.value})}
+                      onChange={(e) =>
+                        setData({ ...data, username: e.target.value })
+                      }
                     />
                   </div>
 
@@ -109,7 +124,9 @@ const navigate = useNavigate();
                       placeholder="Enter Your Email"
                       onFocus={() => focusInput(1)}
                       onBlur={() => setInputIndex(null)}
-                      onChange={(e) => setData({...data,email:e.target.value})}
+                      onChange={(e) =>
+                        setData({ ...data, email: e.target.value })
+                      }
                     />
                   </div>
 
@@ -129,7 +146,9 @@ const navigate = useNavigate();
                       value={data.password}
                       onFocus={() => focusInput(2)}
                       onBlur={() => setInputIndex(null)}
-                      onChange={(e) => setData({...data,password:e.target.value})}
+                      onChange={(e) =>
+                        setData({ ...data, password: e.target.value })
+                      }
                     />
 
                     <span
@@ -158,7 +177,9 @@ const navigate = useNavigate();
                       placeholder="Confirm Password"
                       onFocus={() => focusInput(3)}
                       onBlur={() => setInputIndex(null)}
-                      onChange={(e) => setData({...data,confirmPassword:e.target.value})}
+                      onChange={(e) =>
+                        setData({ ...data, confirmPassword: e.target.value })
+                      }
                     />
 
                     <span
@@ -176,10 +197,13 @@ const navigate = useNavigate();
                   </div>
 
                   <div className="form-group">
-                    <Button type="submit" className="btn-blue btn-lg w-100 btn-big">
+                    <Button
+                      type="submit"
+                      className="btn-blue btn-lg w-100 btn-big"
+                    >
                       Sign Up
                     </Button>
-                  </div>       
+                  </div>
                 </form>
                 <span className="text-center d-block mt-3">
                   Already have an account?

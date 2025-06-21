@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -15,84 +15,91 @@ import {
   useMediaQuery,
   useTheme,
   CircularProgress,
-} from "@mui/material"
-import { DatePicker } from "@mui/x-date-pickers/DatePicker"
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
-import { FaUserPlus, FaEdit, FaSearch } from "react-icons/fa"
-import { IoMdCloseCircle } from "react-icons/io"
-import { MdDelete } from "react-icons/md"
-import { GrFormPrevious, GrFormNext } from "react-icons/gr"
-import "./Employees.css"
-import axios from "axios"
-import toast from "react-hot-toast"
-
+} from "@mui/material";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { FaUserPlus, FaEdit, FaSearch } from "react-icons/fa";
+import { IoMdCloseCircle } from "react-icons/io";
+import { MdDelete } from "react-icons/md";
+import { GrFormPrevious, GrFormNext } from "react-icons/gr";
+import "./Employees.css";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 const Employees = () => {
-  const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
-  const isTablet = useMediaQuery(theme.breakpoints.down("md"))
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isTablet = useMediaQuery(theme.breakpoints.down("md"));
 
   // Loading state
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(true);
 
   // Dialog state
-  const [open, setOpen] = useState(false)
-  const handleOpen = () => setOpen(true)
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
 
   // Add these state variables after the existing ones
-  const [editMode, setEditMode] = useState(false)
-  const [selectedEmployee, setSelectedEmployee] = useState(null)
+  const [editMode, setEditMode] = useState(false);
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
 
   // Sample Employee data
-  const [formData, setFormData] = useState([])
+  const [formData, setFormData] = useState([]);
 
-   // Helper function to format date for display
+  // Helper function to format date for display
   const formatDateForDisplay = (dateValue) => {
-    if (!dateValue) return ""
+    if (!dateValue) return "";
 
     // If it's already a string in YYYY-MM-DD format, return as is
-    if (typeof dateValue === "string" && /^\d{4}-\d{2}-\d{2}$/.test(dateValue)) {
-      return dateValue
+    if (
+      typeof dateValue === "string" &&
+      /^\d{4}-\d{2}-\d{2}$/.test(dateValue)
+    ) {
+      return dateValue;
     }
 
     // If Date is a Date object, convert to YYYY-MM-DD
     if (dateValue instanceof Date) {
-      return dateValue.toISOString().split("T")[0]
+      return dateValue.toISOString().split("T")[0];
     }
 
-    // Convert if date is a ISO String 
+    // Convert if date is a ISO String
     if (typeof dateValue === "string") {
       try {
-        const date = new Date(dateValue)
-        return date.toISOString().split("T")[0]
+        const date = new Date(dateValue);
+        return date.toISOString().split("T")[0];
       } catch (error) {
-        return dateValue
+        return dateValue;
       }
     }
 
-    return String(dateValue)
-  }
+    return String(dateValue);
+  };
 
   //get data from database
   useEffect(() => {
     const fetchData = async () => {
-      setIsLoading(true)
+      setIsLoading(true);
       try {
-        const response = await axios.get("https://taskflowpro-exop.vercel.app/api/employees/getEmployees")
+        const response = await axios.get(
+          "https://taskflowpro-exop.vercel.app/api/employees/getEmployees"
+        );
         if (response.status === 200) {
-          console.log("Employee data fetched successfully:", response.data)
-          setFormData(response.data)
+          console.log("Employee data fetched successfully:");
+          setFormData(response.data);
         }
       } catch (error) {
-        console.error("Error fetching Employee data:", error)
-        toast.error("Failed to load employee data", { position: "bottom-left" })
+        console.error("Error fetching Employee data:", error);
+        toast.error("Failed to load employee data", {
+          position: "top-right",
+          style: { background: "#f44336", color: "#fff" },
+        });
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
-    }
-    fetchData()
-  }, [])
+    };
+    fetchData();
+  }, []);
 
   //Add Employee
   const [data, setData] = useState({
@@ -100,74 +107,104 @@ const Employees = () => {
     phoneNo: "",
     designation: "",
     joinedDate: null,
-  })
+  });
 
   // Loading state for add/update operations
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleAddEmployee = async (e) => {
-    e.preventDefault()
-    setIsSubmitting(true)
+    e.preventDefault();
+    setIsSubmitting(true);
 
-    const { employeeName, phoneNo, designation, joinedDate } = data
+    const { employeeName, phoneNo, designation, joinedDate } = data;
 
     // Convert Date object to ISO string
-    const formattedJoinedDate = joinedDate ? joinedDate.toISOString().split("T")[0] : ""
+    const formattedJoinedDate = joinedDate
+      ? joinedDate.toISOString().split("T")[0]
+      : "";
 
     try {
       if (editMode && selectedEmployee) {
-      
         // Update existing Employee
-        const response = await axios.put(`https://taskflowpro-exop.vercel.app/api/employees/updateEmployees/${selectedEmployee._id}`, {
-          employeeName,
-          phoneNo,
-          designation,
-          joinedDate: formattedJoinedDate, //YYYY-MM-DD
-        },)
+        const response = await axios.put(
+          `https://taskflowpro-exop.vercel.app/api/employees/updateEmployees/${selectedEmployee._id}`,
+          {
+            employeeName,
+            phoneNo,
+            designation,
+            joinedDate: formattedJoinedDate, //YYYY-MM-DD
+          }
+        );
 
         if (response.data.error) {
-          toast.error(response.data.error, { position: "bottom-left" })
+          toast.error(response.data.error, {
+            position: "top-right",
+            style: { background: "#f44336", color: "#fff" },
+          });
         } else {
           // Update the Employee in the local state
           setFormData((prev) =>
             prev.map((Employee) =>
-              Employee._id === selectedEmployee._id ? { ...Employee, employeeName, phoneNo, designation, joinedDate } : Employee,
-            ),
-          )
-          toast.success("Employee Updated Successfully", { position: "bottom-left" })
-          handleClose()
-          resetForm()
+              Employee._id === selectedEmployee._id
+                ? {
+                    ...Employee,
+                    employeeName,
+                    phoneNo,
+                    designation,
+                    joinedDate,
+                  }
+                : Employee
+            )
+          );
+          toast.success("Employee Updated Successfully", {
+            position: "top-right",
+            style: { background: "#4caf50", color: "#fff" },
+          });
+          handleClose();
+          resetForm();
         }
       } else {
         // Add new Employee (existing code)
-        const { data: responseData } = await axios.post("https://taskflowpro-exop.vercel.app/api/employees/addEmployees", {
-          employeeName,
-          phoneNo,
-          designation,
-          joinedDate: formattedJoinedDate,
-        })
+        const { data: responseData } = await axios.post(
+          "https://taskflowpro-exop.vercel.app/api/employees/addEmployees",
+          {
+            employeeName,
+            phoneNo,
+            designation,
+            joinedDate: formattedJoinedDate,
+          }
+        );
 
         if (responseData.error) {
-          toast.error(responseData.error, { position: "bottom-left" })
+          toast.error(responseData.error, {
+            position: "top-right",
+            style: { background: "#f44336", color: "#fff" },
+          });
         } else {
           setData({
             employeeName: "",
             phoneNo: "",
             designation: "",
             joinedDate: null,
-          })
-          toast.success("Employee Added Successfully", { position: "bottom-left" })
-          setFormData((prev) => [...prev, responseData])
-          handleClose()
+          });
+          toast.success("Employee Added Successfully", {
+            position: "top-right",
+            style: { background: "#4caf50", color: "#fff" },
+          });
+          setFormData((prev) => [...prev, responseData]);
+          handleClose();
         }
       }
     } catch (error) {
-      console.log(error)
-      toast.error("Operation failed", { position: "bottom-left" })
+      console.log(error);
+      toast.error("Operation failed", {
+        position: "top-right",
+        style: { background: "#f44336", color: "#fff" },
+      });
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   // Reset form function
   const resetForm = () => {
@@ -176,97 +213,116 @@ const Employees = () => {
       phoneNo: "",
       designation: "",
       joinedDate: null,
-    })
-    setEditMode(false)
-    setSelectedEmployee(null)
-  }
+    });
+    setEditMode(false);
+    setSelectedEmployee(null);
+  };
 
   // Handle edit Employee
-   // When editing, convert string back to Date object
+  // When editing, convert string back to Date object
   const handleEditEmployee = (Employee) => {
-    setSelectedEmployee(Employee)
+    setSelectedEmployee(Employee);
     setData({
       employeeName: Employee.employeeName,
       phoneNo: Employee.phoneNo,
       designation: Employee.designation,
       joinedDate: Employee.joinedDate ? new Date(Employee.joinedDate) : null, // Convert string to Date
-    })
-    setEditMode(true)
-    setOpen(true)
-  }
+    });
+    setEditMode(true);
+    setOpen(true);
+  };
 
   // Handle delete Employee
-  const [isDeletingId, setIsDeletingId] = useState(null)
+  const [isDeletingId, setIsDeletingId] = useState(null);
 
   const handleDeleteEmployee = async (EmployeeId) => {
-    
     if (window.confirm("Are you sure you want to delete this Employee?")) {
-      setIsDeletingId(EmployeeId)
+      setIsDeletingId(EmployeeId);
       try {
-        const response = await axios.delete(`https://taskflowpro-exop.vercel.app/api/employees/deleteEmployees/${EmployeeId}`)
+        const response = await axios.delete(
+          `https://taskflowpro-exop.vercel.app/api/employees/deleteEmployees/${EmployeeId}`
+        );
 
         if (response.data.error) {
-          toast.error(response.data.error, { position: "bottom-left" })
+          toast.error(response.data.error, {
+            position: "top-right",
+            style: { background: "#f44336", color: "#fff" },
+          });
         } else {
           // Remove Employee from local state
-          setFormData((prev) => prev.filter((Employee) => Employee._id !== EmployeeId))
-          toast.success("Employee Deleted Successfully", { position: "bottom-left" })
+          setFormData((prev) =>
+            prev.filter((Employee) => Employee._id !== EmployeeId)
+          );
+          toast.success("Employee Deleted Successfully", {
+            position: "top-right",
+            style: { background: "#4caf50", color: "#fff" },
+          });
         }
       } catch (error) {
-        console.log(error)
-        toast.error("Failed to delete Employee", { position: "bottom-left" })
+        console.log(error);
+        toast.error("Failed to delete Employee", {
+          position: "top-right",
+          style: { background: "#f44336", color: "#fff" },
+        });
       } finally {
-        setIsDeletingId(null)
+        setIsDeletingId(null);
       }
     }
-  }
+  };
 
   //Update Employee
 
   // Search state
-  const [searchTerm, setSearchTerm] = useState("")
-  const [filteredEmployees, setFilteredEmployees] = useState([])
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredEmployees, setFilteredEmployees] = useState([]);
 
   // Pagination state
-  const [currentPage, setCurrentPage] = useState(1)
-  const itemsPerPage = 5
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
   // Filter Employees based on search term
   useEffect(() => {
     const results = formData.filter(
       (EmployeeRec) =>
-        EmployeeRec.employeeName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        EmployeeRec.employeeName
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
         EmployeeRec.phoneNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        EmployeeRec.designation.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        formatDateForDisplay(EmployeeRec.joinedDate).includes(searchTerm),
-    )
-    setFilteredEmployees(results)
-    setCurrentPage(1) // Reset to first page when search changes
-  }, [searchTerm, formData])
+        EmployeeRec.designation
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
+        formatDateForDisplay(EmployeeRec.joinedDate).includes(searchTerm)
+    );
+    setFilteredEmployees(results);
+    setCurrentPage(1); // Reset to first page when search changes
+  }, [searchTerm, formData]);
 
   // Handle search input change
   const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value)
-  }
+    setSearchTerm(e.target.value);
+  };
 
   // Calculate pagination
-  const totalItems = filteredEmployees.length
-  const totalPages = Math.ceil(totalItems / itemsPerPage)
-  const indexOfLastItem = currentPage * itemsPerPage
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage
-  const currentItems = filteredEmployees.slice(indexOfFirstItem, indexOfLastItem)
+  const totalItems = filteredEmployees.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredEmployees.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1)
+      setCurrentPage(currentPage + 1);
     }
-  }
+  };
 
   const handlePrevPage = () => {
     if (currentPage > 1) {
-      setCurrentPage(currentPage - 1)
+      setCurrentPage(currentPage - 1);
     }
-  }
+  };
 
   // Render Employee cards for mobile view
   const renderEmployeeCards = () => {
@@ -286,10 +342,12 @@ const Employees = () => {
             No employee found
           </Typography>
           <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
-            {searchTerm ? "Try adjusting your search criteria" : "Add your first employee to get started"}
+            {searchTerm
+              ? "Try adjusting your search criteria"
+              : "Add your first employee to get started"}
           </Typography>
         </Box>
-      )
+      );
     }
 
     return currentItems.map((Employee) => (
@@ -302,7 +360,8 @@ const Employees = () => {
           <strong>Designation:</strong> {Employee.designation}
         </Typography>
         <Typography variant="body2">
-          <strong>Joined Date:</strong> {formatDateForDisplay(Employee.joinedDate)}
+          <strong>Joined Date:</strong>{" "}
+          {formatDateForDisplay(Employee.joinedDate)}
         </Typography>
         <Box sx={{ display: "flex", gap: 1, mt: 2 }}>
           <Button
@@ -322,15 +381,21 @@ const Employees = () => {
             variant="outlined"
             color="error"
             size="small"
-            startIcon={isDeletingId === Employee._id ? <CircularProgress size={16} color="error" /> : <MdDelete />}
+            startIcon={
+              isDeletingId === Employee._id ? (
+                <CircularProgress size={16} color="error" />
+              ) : (
+                <MdDelete />
+              )
+            }
             disabled={isDeletingId === Employee._id}
           >
-             {isDeletingId === Employee._id ? "Deleting..." : "Delete"}
+            {isDeletingId === Employee._id ? "Deleting..." : "Delete"}
           </Button>
         </Box>
       </Card>
-    ))
-  }
+    ));
+  };
 
   // Render Employee table for desktop view
   const renderEmployeeTable = () => {
@@ -347,66 +412,83 @@ const Employees = () => {
             </tr>
           </thead>
           <tbody>
-             {currentItems.length === 0 ? (
+            {currentItems.length === 0 ? (
               <tr>
-                <td colSpan={isTablet ? "4" : "5"} style={{ textAlign: "center", padding: "40px" }}>
+                <td
+                  colSpan={isTablet ? "4" : "5"}
+                  style={{ textAlign: "center", padding: "40px" }}
+                >
                   <Typography variant="h6" color="textSecondary">
                     No employee found
                   </Typography>
-                  <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
-                    {searchTerm ? "Try adjusting your search criteria" : "Add your first employee to get started"}
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    sx={{ mt: 1 }}
+                  >
+                    {searchTerm
+                      ? "Try adjusting your search criteria"
+                      : "Add your first employee to get started"}
                   </Typography>
                 </td>
               </tr>
             ) : (
-            currentItems.map((Employee) => {
-              return (
-                <tr key={Employee._id}>
-                  <td>{Employee.employeeName}</td>
-                  {!isTablet && <td>{Employee.phoneNo}</td>}
-                  <td>{Employee.designation}</td>
-                  {!isTablet && <td>{formatDateForDisplay(Employee.joinedDate)}</td>}
-                  <td>
-                    <div className="actions">
-                      <Button
-                        onClick={() => handleEditEmployee(Employee)}
-                        variant="contained"
-                        color="success"
-                        size={isTablet ? "small" : "medium"}
-                        startIcon={<FaEdit />}
-                        disabled={isDeletingId === Employee._id}
-                      >
-                        {!isTablet && "Edit"}
-                      </Button>
-                      <Button
-                        onClick={() => handleDeleteEmployee(Employee._id)}
-                        variant="outlined"
-                        color="error"
-                        size={isTablet ? "small" : "medium"}
-                        startIcon={
-                          isDeletingId === Employee._id ? <CircularProgress size={16} color="error" /> : <MdDelete />
-                        }
-                        disabled={isDeletingId === Employee._id}
-                      >
-                        {!isTablet && (isDeletingId === Employee._id ? 
-                        "Deleting..." : "Delete")}
-                      </Button>
-                    </div>
-                  </td>
-                </tr>
-              )
-            })
-          )}
+              currentItems.map((Employee) => {
+                return (
+                  <tr key={Employee._id}>
+                    <td>{Employee.employeeName}</td>
+                    {!isTablet && <td>{Employee.phoneNo}</td>}
+                    <td>{Employee.designation}</td>
+                    {!isTablet && (
+                      <td>{formatDateForDisplay(Employee.joinedDate)}</td>
+                    )}
+                    <td>
+                      <div className="actions">
+                        <Button
+                          onClick={() => handleEditEmployee(Employee)}
+                          variant="contained"
+                          color="success"
+                          size={isTablet ? "small" : "medium"}
+                          startIcon={<FaEdit />}
+                          disabled={isDeletingId === Employee._id}
+                        >
+                          {!isTablet && "Edit"}
+                        </Button>
+                        <Button
+                          onClick={() => handleDeleteEmployee(Employee._id)}
+                          variant="outlined"
+                          color="error"
+                          size={isTablet ? "small" : "medium"}
+                          startIcon={
+                            isDeletingId === Employee._id ? (
+                              <CircularProgress size={16} color="error" />
+                            ) : (
+                              <MdDelete />
+                            )
+                          }
+                          disabled={isDeletingId === Employee._id}
+                        >
+                          {!isTablet &&
+                            (isDeletingId === Employee._id
+                              ? "Deleting..."
+                              : "Delete")}
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })
+            )}
           </tbody>
         </table>
       </div>
-    )
-  }
+    );
+  };
 
   const handleClose = () => {
-    setOpen(false)
-    resetForm()
-  }
+    setOpen(false);
+    resetForm();
+  };
 
   // Loading screen component
   const LoadingScreen = () => (
@@ -425,7 +507,7 @@ const Employees = () => {
         Loading employee data...
       </Typography>
     </Box>
-  )
+  );
 
   return (
     <>
@@ -451,8 +533,12 @@ const Employees = () => {
         <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
           <DialogTitle>
             {editMode ? "Edit Employee" : "Add Employee"}
-            <IconButton style={{ float: "right" }} onClick={handleClose} 
-            color="default" disabled={isSubmitting}>
+            <IconButton
+              style={{ float: "right" }}
+              onClick={handleClose}
+              color="default"
+              disabled={isSubmitting}
+            >
               <IoMdCloseCircle />
             </IconButton>
           </DialogTitle>
@@ -463,7 +549,7 @@ const Employees = () => {
                   size="small"
                   autoFocus
                   type="text"
-                  value={data.employeeName}
+                  value={data.employeeName || ""}
                   onChange={(e) =>
                     setData({ ...data, employeeName: e.target.value })
                   }
@@ -477,7 +563,7 @@ const Employees = () => {
                   size="small"
                   label="Phone No"
                   type="text"
-                  value={data.phoneNo}
+                  value={data.phoneNo || ""}
                   onChange={(e) =>
                     setData({ ...data, phoneNo: e.target.value })
                   }
@@ -490,7 +576,7 @@ const Employees = () => {
                   size="small"
                   label="Designation"
                   type="text"
-                  value={data.designation}
+                  value={data.designation || ""}
                   onChange={(e) =>
                     setData({ ...data, designation: e.target.value })
                   }
@@ -541,11 +627,19 @@ const Employees = () => {
                     color="primary"
                     sx={{ alignSelf: "flex-start" }}
                     disabled={isSubmitting}
-                    startIcon={isSubmitting && <CircularProgress 
-                    size={16} color="inherit" />}
+                    startIcon={
+                      isSubmitting && (
+                        <CircularProgress size={16} color="inherit" />
+                      )
+                    }
                   >
-                    {isSubmitting ? (editMode ? "Updating..." : 
-                    "Adding...") : editMode ? "Update" : "Add"}
+                    {isSubmitting
+                      ? editMode
+                        ? "Updating..."
+                        : "Adding..."
+                      : editMode
+                      ? "Update"
+                      : "Add"}
                   </Button>
                 </Box>
               </form>
@@ -601,69 +695,68 @@ const Employees = () => {
                 Add Employee
               </Button>
             </Box>
-            
+
             {/* Loading Screen or Employee List */}
-          {isLoading ? (
-            <LoadingScreen />
-          ) : (
-            <>
-            
-            {/* Employee List - Table or Cards based on screen size */}
-            {isMobile ? renderEmployeeCards() : renderEmployeeTable()}
+            {isLoading ? (
+              <LoadingScreen />
+            ) : (
+              <>
+                {/* Employee List - Table or Cards based on screen size */}
+                {isMobile ? renderEmployeeCards() : renderEmployeeTable()}
 
-            {/* Pagination Controls */}
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: isMobile ? "column" : "row",
-                justifyContent: "space-between",
-                alignItems: isMobile ? "center" : "center",
-                gap: 2,
-                mt: 3,
-              }}
-            >
-              <Box sx={{ display: "flex", gap: 1 }}>
-                <Button
-                  variant="outlined"
-                  onClick={handlePrevPage}
-                  disabled={currentPage === 1}
+                {/* Pagination Controls */}
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: isMobile ? "column" : "row",
+                    justifyContent: "space-between",
+                    alignItems: isMobile ? "center" : "center",
+                    gap: 2,
+                    mt: 3,
+                  }}
                 >
-                  <GrFormPrevious />
-                </Button>
-                <Button
-                  variant="outlined"
-                  onClick={handleNextPage}
-                  disabled={currentPage === totalPages}
-                >
-                  <GrFormNext />
-                </Button>
-              </Box>
+                  <Box sx={{ display: "flex", gap: 1 }}>
+                    <Button
+                      variant="outlined"
+                      onClick={handlePrevPage}
+                      disabled={currentPage === 1}
+                    >
+                      <GrFormPrevious />
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      onClick={handleNextPage}
+                      disabled={currentPage === totalPages}
+                    >
+                      <GrFormNext />
+                    </Button>
+                  </Box>
 
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: isMobile ? "column" : "row",
-                  alignItems: "center",
-                  gap: isMobile ? 1 : 3,
-                  fontSize: "0.875rem",
-                }}
-              >
-                <Typography variant="body2">
-                  Page {currentPage} of {totalPages || 1}
-                </Typography>
-                <Typography variant="body2">
-                  Showing {Math.min(itemsPerPage, currentItems.length)} of{" "}
-                  {totalItems} items
-                </Typography>
-              </Box>
-            </Box>
-             </>
-          )}
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: isMobile ? "column" : "row",
+                      alignItems: "center",
+                      gap: isMobile ? 1 : 3,
+                      fontSize: "0.875rem",
+                    }}
+                  >
+                    <Typography variant="body2">
+                      Page {currentPage} of {totalPages || 1}
+                    </Typography>
+                    <Typography variant="body2">
+                      Showing {Math.min(itemsPerPage, currentItems.length)} of{" "}
+                      {totalItems} items
+                    </Typography>
+                  </Box>
+                </Box>
+              </>
+            )}
           </CardContent>
         </Card>
       </LocalizationProvider>
     </>
   );
-}
+};
 
-export default Employees
+export default Employees;
