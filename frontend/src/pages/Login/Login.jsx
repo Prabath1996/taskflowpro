@@ -28,7 +28,7 @@ const handleLogin = async (e) => {
   const { email, password } = data;
   try {
     const { data } = await axios.post(
-      "http://localhost:5000/api/users/login",
+      "https://taskflowpro-exop.vercel.app/api/users/login",
       { email, password }
     );
     console.log("Login response:", data); // Debug line
@@ -56,11 +56,17 @@ const handleLogin = async (e) => {
       });
       navigate("/dashboard");
     } else {
-      toast.error("Unexpected error. Please try again.");
+      toast.error("Unexpected error. Please try again.", {
+        position: "top-right",
+        style: { background: "#f44336", color: "#fff" },
+      });
     }
   } catch (error) {
     console.error(error);
-    toast.error("Server error. Please try again.");
+    toast.error("Server error. Please try again.", {
+        position: "top-right",
+        style: { background: "#f44336", color: "#fff" },
+      });
   }
 };
 
