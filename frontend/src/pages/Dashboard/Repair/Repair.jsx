@@ -19,6 +19,7 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  Autocomplete,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -136,15 +137,16 @@ const Repair = () => {
 
   //Add Repair
   const [data, setData] = useState({
+    invNo: "",
     itemName: "",
     modelNo: "",
     serialNo: "",
     fault: "",
     customerName: "",
-    recievedBy: "",
+    receivedBy: "",
     itemInDate: new Date(),
     itemOutDate: null,
-    status: "Pending",
+    status: "Received",
   });
 
   // Loading state for add/update operations
@@ -155,12 +157,13 @@ const Repair = () => {
     setIsSubmitting(true);
 
     const {
+      invNo,
       itemName,
       modelNo,
       serialNo,
       fault,
       customerName,
-      recievedBy,
+      receivedBy,
       itemInDate,
       itemOutDate,
       status,
@@ -180,12 +183,13 @@ const Repair = () => {
         const response = await axios.put(
           `https://taskflowpro-exop.vercel.app/api/repairs/updateRepairs/${selectedRepair._id}`,
           {
+            invNo,
             itemName,
             modelNo,
             serialNo,
             fault,
             customerName,
-            recievedBy,
+            receivedBy,
             itemInDate: formattedItemInDate,
             itemOutDate: formattedItemOutDate,
             status,
@@ -204,12 +208,13 @@ const Repair = () => {
               repair._id === selectedRepair._id
                 ? {
                     ...repair,
+                    invNo,
                     itemName,
                     modelNo,
                     serialNo,
                     fault,
                     customerName,
-                    recievedBy,
+                    receivedBy,
                     itemInDate,
                     itemOutDate,
                     status,
@@ -229,12 +234,13 @@ const Repair = () => {
         const { data: responseData } = await axios.post(
           "https://taskflowpro-exop.vercel.app/api/repairs/addRepairs",
           {
+            invNo,
             itemName,
             modelNo,
             serialNo,
             fault,
             customerName,
-            recievedBy,
+            receivedBy,
             itemInDate: formattedItemInDate,
             itemOutDate: formattedItemOutDate,
             status,
@@ -270,15 +276,16 @@ const Repair = () => {
   // Reset form function
   const resetForm = () => {
     setData({
+      invNo: "",
       itemName: "",
       modelNo: "",
       serialNo: "",
       fault: "",
       customerName: "",
-      recievedBy: "",
+      receivedBy: "",
       itemInDate: new Date(),
       itemOutDate: null,
-      status: "Pending",
+      status: "Received",
     });
     setEditMode(false);
     setSelectedRepair(null);
@@ -288,15 +295,16 @@ const Repair = () => {
   const handleEditRepair = (repair) => {
     setSelectedRepair(repair);
     setData({
+      invNo: repair.invNo || "",
       itemName: repair.itemName,
       modelNo: repair.modelNo,
       serialNo: repair.serialNo,
       fault: repair.fault,
       customerName: repair.customerName,
-      recievedBy: repair.recievedBy,
+      receivedBy: repair.receivedBy,
       itemInDate: repair.itemInDate ? new Date(repair.itemInDate) : new Date(),
       itemOutDate: repair.itemOutDate ? new Date(repair.itemOutDate) : null,
-      status: repair.status || "Pending",
+      status: repair.status || "Received",
     });
     setEditMode(true);
     setOpen(true);
@@ -425,6 +433,9 @@ const Repair = () => {
       <Card key={repair._id} className="repair-card" sx={{ mb: 2, p: 2 }}>
         <Typography variant="h6">{repair.itemName}</Typography>
         <Typography variant="body2">
+          <strong>Invoice No:</strong> {repair.invNo}
+        </Typography>
+        <Typography variant="body2">
           <strong>Model No:</strong> {repair.modelNo}
         </Typography>
         <Typography variant="body2">
@@ -440,14 +451,14 @@ const Repair = () => {
           <strong>Status:</strong>{" "}
           <span
             className={`status-badge ${
-              repair.status?.toLowerCase().replace(/\s/g, "") || "pending"
+              repair.status?.toLowerCase().replace(/\s/g, "") || "Received"
             }`}
           >
-            {repair.status || "Pending"}
+            {repair.status || "Received"}
           </span>
         </Typography>
         <Typography variant="body2">
-          <strong>Received By:</strong> {repair.recievedBy}
+          <strong>Received By:</strong> {repair.receivedBy}
         </Typography>
         <Typography variant="body2">
           <strong>Item In Date:</strong>{" "}
@@ -507,9 +518,15 @@ const Repair = () => {
   const renderRepairTable = () => {
     return (
       <div className="repairTableWrapper">
-        <table>
+        <table
+          style={{
+            width: "100%",
+            borderCollapse: "collapse",
+          }}
+        >
           <thead>
             <tr>
+              <th>Invoice No</th>
               <th>Item Name</th>
               <th>Model No</th>
               {!isTablet && <th>Serial No</th>}
@@ -547,6 +564,7 @@ const Repair = () => {
               currentItems.map((repair) => {
                 return (
                   <tr key={repair._id}>
+                    <td>{repair.invNo || ""}</td>
                     <td>{repair.itemName}</td>
                     <td>{repair.modelNo}</td>
                     {!isTablet && <td>{repair.serialNo}</td>}
@@ -556,13 +574,13 @@ const Repair = () => {
                       <span
                         className={`status-badge ${
                           repair.status?.toLowerCase().replace(/\s/g, "") ||
-                          "pending"
+                          "Received"
                         }`}
                       >
-                        {repair.status || "Pending"}
+                        {repair.status || "Received"}
                       </span>
                     </td>
-                    {!isTablet && <td>{repair.recievedBy}</td>}
+                    {!isTablet && <td>{repair.receivedBy}</td>}
                     {!isTablet && (
                       <td>{formatDateForDisplay(repair.itemInDate)}</td>
                     )}
@@ -577,9 +595,14 @@ const Repair = () => {
                           onClick={() => handleViewRepair(repair)}
                           variant="contained"
                           color="info"
-                          size={isTablet ? "small" : "medium"}
+                          size="small"
+                          sx={{
+                            minWidth: 0,
+                            padding: "2px 6px",
+                            fontSize: "0.8rem",
+                            mr: 0.5,
+                          }}
                           startIcon={<FaEye />}
-                          sx={{ mr: 1 }}
                         >
                           {!isTablet && "View"}
                         </Button>
@@ -587,10 +610,15 @@ const Repair = () => {
                           onClick={() => handleEditRepair(repair)}
                           variant="contained"
                           color="success"
-                          size={isTablet ? "small" : "medium"}
+                          size="small"
+                          sx={{
+                            minWidth: 0,
+                            padding: "2px 6px",
+                            fontSize: "0.8rem",
+                            mr: 0.5,
+                          }}
                           startIcon={<FaEdit />}
                           disabled={isDeletingId === repair._id}
-                          sx={{ mr: 1 }}
                         >
                           {!isTablet && "Edit"}
                         </Button>
@@ -598,7 +626,13 @@ const Repair = () => {
                           onClick={() => handleDeleteRepair(repair._id)}
                           variant="outlined"
                           color="error"
-                          size={isTablet ? "small" : "medium"}
+                          size="small"
+                          sx={{
+                            minWidth: 0,
+                            padding: "2px 6px",
+                            fontSize: "0.8rem",
+                            mr: 0.5,
+                          }}
                           startIcon={
                             isDeletingId === repair._id ? (
                               <CircularProgress size={16} color="error" />
@@ -694,6 +728,17 @@ const Repair = () => {
                   size="small"
                   autoFocus
                   type="text"
+                  value={data.invNo}
+                  onChange={(e) => setData({ ...data, invNo: e.target.value })}
+                  label="Invoice No"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  disabled={isSubmitting}
+                />
+                <TextField
+                  size="small"
+                  type="text"
                   value={data.itemName}
                   onChange={(e) =>
                     setData({ ...data, itemName: e.target.value })
@@ -745,54 +790,61 @@ const Repair = () => {
                 />
 
                 {/* Customer Selection */}
-                <FormControl fullWidth margin="normal" size="small">
-                  <InputLabel id="customer-select-label">Customer</InputLabel>
-                  <Select
-                    labelId="customer-select-label"
-                    id="customer-select"
-                    value={data.customerName}
-                    label="Customer"
-                    onChange={(e) =>
-                      setData({ ...data, customerName: e.target.value })
-                    }
-                    disabled={isSubmitting}
-                  >
-                    {customers.map((customer) => (
-                      <MenuItem
-                        key={customer._id}
-                        value={customer.customerName}
-                      >
-                        {customer.customerName}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+                <Autocomplete
+                  options={customers}
+                  getOptionLabel={(option) => option.customerName}
+                  value={
+                    customers.find(
+                      (c) => c.customerName === data.customerName
+                    ) || null
+                  }
+                  onChange={(_, newValue) =>
+                    setData({
+                      ...data,
+                      customerName: newValue ? newValue.customerName : "",
+                    })
+                  }
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Customer"
+                      margin="normal"
+                      size="small"
+                      required
+                      disabled={isSubmitting}
+                      fullWidth
+                    />
+                  )}
+                  disabled={isSubmitting}
+                />
 
                 {/* Employee Selection */}
-                <FormControl fullWidth margin="normal" size="small">
-                  <InputLabel id="employee-select-label">
-                    Received By
-                  </InputLabel>
-                  <Select
-                    labelId="employee-select-label"
-                    id="employee-select"
-                    value={data.recievedBy}
-                    label="Received By"
-                    onChange={(e) =>
-                      setData({ ...data, recievedBy: e.target.value })
-                    }
-                    disabled={isSubmitting}
-                  >
-                    {employees.map((employee) => (
-                      <MenuItem
-                        key={employee._id}
-                        value={employee.employeeName}
-                      >
-                        {employee.employeeName}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+                <Autocomplete
+                  options={employees}
+                  getOptionLabel={(option) => option.employeeName}
+                  value={
+                    employees.find((e) => e.employeeName === data.receivedBy) ||
+                    null
+                  }
+                  onChange={(_, newValue) =>
+                    setData({
+                      ...data,
+                      receivedBy: newValue ? newValue.employeeName : "",
+                    })
+                  }
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Received By"
+                      margin="normal"
+                      size="small"
+                      required
+                      disabled={isSubmitting}
+                      fullWidth
+                    />
+                  )}
+                  disabled={isSubmitting}
+                />
 
                 {/* Status Selection */}
                 <FormControl fullWidth margin="normal" size="small">
@@ -807,9 +859,11 @@ const Repair = () => {
                     }
                     disabled={isSubmitting}
                   >
-                    <MenuItem value="Pending">Pending</MenuItem>
-                    <MenuItem value="In Progress">In Progress</MenuItem>
+                    <MenuItem value="Received">Received</MenuItem>
+                    <MenuItem value="Diagnosed">Diagnosed</MenuItem>
+                    <MenuItem value="In Repair">In Repair</MenuItem>
                     <MenuItem value="Completed">Completed</MenuItem>
+                    <MenuItem value="Delivered">Delivered</MenuItem>
                   </Select>
                 </FormControl>
 
@@ -912,6 +966,14 @@ const Repair = () => {
                 >
                   <Box>
                     <Typography variant="subtitle2" color="textSecondary">
+                      Invoice No
+                    </Typography>
+                    <Typography variant="body1" sx={{ mb: 1 }}>
+                      {viewRepair.invNo}
+                    </Typography>
+                  </Box>
+                  <Box>
+                    <Typography variant="subtitle2" color="textSecondary">
                       Item Name
                     </Typography>
                     <Typography variant="body1" sx={{ mb: 1 }}>
@@ -947,7 +1009,7 @@ const Repair = () => {
                       Received By
                     </Typography>
                     <Typography variant="body1" sx={{ mb: 1 }}>
-                      {viewRepair.recievedBy}
+                      {viewRepair.receivedBy}
                     </Typography>
                   </Box>
                   <Box>
@@ -959,10 +1021,10 @@ const Repair = () => {
                       sx={{ mb: 1 }}
                       className={`status-badge ${
                         viewRepair.status?.toLowerCase().replace(/\s/g, "") ||
-                        "pending"
+                        "Received"
                       }`}
                     >
-                      {viewRepair.status || "Pending"}
+                      {viewRepair.status || "Received"}
                     </Typography>
                   </Box>
                   <Box>

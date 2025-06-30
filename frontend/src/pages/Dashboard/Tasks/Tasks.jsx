@@ -21,6 +21,7 @@ import {
   InputLabel,
   Chip,
   OutlinedInput,
+  Autocomplete,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -522,7 +523,12 @@ const Task = () => {
   const renderTaskTable = () => {
     return (
       <div className="taskTableWrapper">
-        <table>
+        <table
+          style={{
+            width: "100%",
+            borderCollapse: "collapse",
+          }}
+        >
           <thead>
             <tr>
               <th>Task</th>
@@ -715,31 +721,33 @@ const Task = () => {
                 />
 
                 {/* Customer Selection */}
-                <FormControl fullWidth margin="normal" size="small">
-                  <InputLabel id="customer-select-label">
-                    Customer Name
-                  </InputLabel>
-                  <Select
-                    labelId="customer-select-label"
-                    id="customer-select"
-                    value={data.customerName}
-                    label="Customer Name"
-                    onChange={(e) =>
-                      setData({ ...data, customerName: e.target.value })
-                    }
-                    disabled={isSubmitting}
-                    //required
-                  >
-                    {customers.map((customer) => (
-                      <MenuItem
-                        key={customer._id}
-                        value={customer.customerName}
-                      >
-                        {customer.customerName}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+                <Autocomplete
+                  options={customers}
+                  getOptionLabel={(option) => option.customerName}
+                  value={
+                    customers.find(
+                      (c) => c.customerName === data.customerName
+                    ) || null
+                  }
+                  onChange={(_, newValue) =>
+                    setData({
+                      ...data,
+                      customerName: newValue ? newValue.customerName : "",
+                    })
+                  }
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Customer"
+                      margin="normal"
+                      size="small"
+                      required
+                      disabled={isSubmitting}
+                      fullWidth
+                    />
+                  )}
+                  disabled={isSubmitting}
+                />
 
                 {/* location */}
                 <TextField
@@ -758,43 +766,31 @@ const Task = () => {
                 />
 
                 {/* Multiple Employee Selection for Assign To */}
-                <FormControl fullWidth margin="normal" size="small">
-                  <InputLabel id="assign-to-multiple-select-label">
-                    Assign To
-                  </InputLabel>
-                  <Select
-                    labelId="assign-to-multiple-select-label"
-                    id="assign-to-multiple-select"
-                    multiple
-                    value={data.assignTo}
-                    onChange={handleAssignToChange}
-                    input={
-                      <OutlinedInput
-                        id="select-multiple-chip"
-                        label="Assign To"
-                      />
-                    }
-                    renderValue={(selected) => (
-                      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                        {selected.map((value) => (
-                          <Chip key={value} label={value} size="small" />
-                        ))}
-                      </Box>
-                    )}
-                    MenuProps={MenuProps}
-                    disabled={isSubmitting}
-                    //required
-                  >
-                    {employees.map((employee) => (
-                      <MenuItem
-                        key={employee._id}
-                        value={employee.employeeName}
-                      >
-                        {employee.employeeName}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+                <Autocomplete
+                  multiple
+                  options={employees}
+                  getOptionLabel={(option) => option.employeeName}
+                  value={employees.filter((e) =>
+                    data.assignTo.includes(e.employeeName)
+                  )}
+                  onChange={(_, newValue) =>
+                    setData({
+                      ...data,
+                      assignTo: newValue.map((e) => e.employeeName),
+                    })
+                  }
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Assign To"
+                      margin="normal"
+                      size="small"
+                      disabled={isSubmitting}
+                      fullWidth
+                    />
+                  )}
+                  disabled={isSubmitting}
+                />
 
                 <TextField
                   size="small"

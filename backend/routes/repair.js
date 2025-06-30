@@ -42,7 +42,7 @@ router.post('/addRepairs', async (req, res) => {
            error: 'Customer field is required' 
          });
        }
-       if (!repair.recievedBy) {
+       if (!repair.receivedBy) {
          return res.json({ 
            error: 'Recieved By field is required' 
          });

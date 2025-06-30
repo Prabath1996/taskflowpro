@@ -2,6 +2,8 @@ const express = require("express");
 const User = require("../models/User");
 const router = express.Router();
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const auth = require("../middleware/auth");
 
 // Get all users
 router.get("/", async (req, res) => {
@@ -64,47 +66,97 @@ router.post("/signup", async (req, res) => {
       password: hashedPassword,
     });
 
-    return res.json(user);
+    return res.json({
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+    });
   } catch (error) {
     console.log(error);
   }
 });
 
-// User login
+// User login with JWT
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    //Check if email was entered
     if (!email) {
-      return res.json({
-        error: "Email is Required",
-      });
+      return res.json({ error: "Email is Required" });
     }
-    //Check if user exist
     const user = await User.findOne({ email });
     if (!user) {
-      return res.json({
-        error: "No user found",
-      });
+      return res.json({ error: "No user found" });
     }
-    //Check if password was entered
     if (!password) {
-      return res.json({
-        error: "Password is Required",
-      });
+      return res.json({ error: "Password is Required" });
     }
-    //Check if password match
     const match = await bcrypt.compare(password, user.password);
     if (match) {
-      return res.json("password match");
-    } else {
+      // Generate JWT token
+      const token = jwt.sign(
+        {
+          userId: user._id,
+          email: user.email,
+          username: user.username,
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: "24h" }
+      );
+
       return res.json({
-        error: "Password does not match",
+        success: true,
+        token: token,
+        user: {
+          _id: user._id,
+          username: user.username,
+          email: user.email,
+        },
       });
+    } else {
+      return res.json({ error: "Password does not match" });
     }
   } catch (error) {
     console.log(error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+// Reset password route
+router.post("/reset-password", auth, async (req, res) => {
+  try {
+    const { newPassword } = req.body;
+    const userId = req.user.userId; // from JWT
+
+    // Check if new password was entered
+    if (!newPassword) {
+      return res.json({
+        error: "New Password is Required",
+      });
+    }
+
+    // Password validation
+    const strongPasswordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+    if (!strongPasswordRegex.test(newPassword)) {
+      return res.json({
+        error:
+          "Password must be at least 6 characters long and include uppercase, lowercase, number, and special character.",
+      });
+    }
+    // Check if user exists
+    const user = await User.findById(userId);
+    if (!user) return res.json({ error: "User not found" });
+
+    // Hash the new password
+    user.password = await bcrypt.hash(newPassword, 10);
+    // Update user password
+    await user.save();
+
+    return res.json({ success: true, message: "Password reset successful" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Server error" });
   }
 });
 

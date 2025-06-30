@@ -35,17 +35,17 @@ router.post("/addCustomers", async (req, res) => {
     }
    // Phone number format validation
       const phoneRegex = /^(07|09)\d{8}$/;
-      if (!phoneRegex.test(employee.phoneNo)) {
+      if (!phoneRegex.test(customer.phoneNo)) {
         return res.json({
           error:
             "Invalid phone number format. Must be 10 digits and start with 07 or 09",
         });
       }
       // Duplicate phone number check
-      const existingEmployee = await Employee.findOne({
-        phoneNo: employee.phoneNo,
+      const existingCustomerPhoneNo = await Customer.findOne({
+        phoneNo: customer.phoneNo,
       });
-      if (existingEmployee) {
+      if (existingCustomerPhoneNo) {
         return res.json({
           error: "Phone number already exists.",
         });
@@ -64,8 +64,8 @@ router.post("/addCustomers", async (req, res) => {
       });
     }
     // Check for duplicate email
-    const existingCustomer = await Customer.findOne({ email: customer.email });
-    if (existingCustomer) {
+    const existingCustomerEmail = await Customer.findOne({ email: customer.email });
+    if (existingCustomerEmail) {
       return res.json({
         error: "Email already exists",
       });

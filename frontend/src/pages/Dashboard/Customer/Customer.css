@@ -37,8 +37,9 @@ body {
 }
 .customerTableWrapper th,
 .customerTableWrapper td {
-  font-size: 14px;
-  padding: 12px;
+  padding: 4px 8px;
+  font-size: 0.85rem;
+  height: 32px;
   text-align: left;
   border-bottom: 1px solid #ddd;
 }
@@ -55,9 +56,10 @@ body {
   gap: 10px;
 }
 .customerTableWrapper .actions button {
-  display: inline-flex;
-  cursor: pointer;
-  font-size: 12px;
+  min-width: 0;
+  padding: 2px 8px;
+  font-size: 0.8rem;
+  margin-right: 2px;
 }
 
 /* Responsive styles */

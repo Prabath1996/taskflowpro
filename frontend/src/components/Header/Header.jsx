@@ -1,4 +1,4 @@
-import { React, useState, useRef, useContext } from "react";
+import { React, useState,useContext } from "react";
 import logo from "../../assets/images/logo.png";
 import userImg from "../../assets/images/userImg.png";
 import { Link, useNavigate } from "react-router-dom";
@@ -8,7 +8,6 @@ import SearchBar from "../SearchBar/Searchbar";
 import Button from "@mui/material/Button";
 import { Avatar, Box, Stack } from "@mui/material";
 import { IconButton } from "@mui/material";
-import { IoMdPerson } from "react-icons/io";
 import { IoShieldHalfOutline } from "react-icons/io5";
 import { MdOutlineLogout } from "react-icons/md";
 import Menu from "@mui/material/Menu";
@@ -40,20 +39,15 @@ const Header = () => {
  const handleLogout = () => {
     SessionManager.clearSession()
     toast.success("Logged out successfully!", {
-    position: "bottom-center",
+    position: "top-right",
     style: { background: "#4caf50", color: "#fff" }
   });
     navigate("/login")
     handleCloseMyAccDrop()
   }
 
-  const handleMyAccount = () => {
-    navigate("/profile")
-    handleCloseMyAccDrop()
-  }
-
   const handleResetPassword = () => {
-    navigate("/forgot-password")
+    navigate("/reset-password")
     handleCloseMyAccDrop()
   }
 
@@ -144,12 +138,6 @@ const Header = () => {
                 },
               }}
             >
-              <MenuItem onClick={handleMyAccount}>
-                <ListItemIcon>
-                  <IoMdPerson />
-                </ListItemIcon>
-                My account
-              </MenuItem>
               <MenuItem onClick={handleResetPassword}>
                 <ListItemIcon>
                   <IoShieldHalfOutline />

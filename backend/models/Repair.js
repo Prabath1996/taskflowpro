@@ -3,6 +3,10 @@ const Schema = mongoose.Schema;
 
 const RepairSchema = new Schema(
   {
+     invNo: {
+      type: String,
+      required: true,
+    },
     itemName: {
       type: String,
       required: true,
@@ -24,7 +28,7 @@ const RepairSchema = new Schema(
       type: String,
       required: true,
     },
-    recievedBy: {
+    receivedBy: {
       type: String,
       required: true,
     },

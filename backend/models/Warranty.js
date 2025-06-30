@@ -1,13 +1,14 @@
 const mongoose = require('mongoose');
+const Supplier = require('./Supplier');
 const Schema = mongoose.Schema;
 
 const WarrantySchema = new Schema({
-  warrantyInDate: {
-    type: Date,
-  },
   itemName: {
     type: String,
     required: true
+  },
+  warrantyInDate: {
+    type: Date,
   },
   modelNo: {
     type: String,
@@ -18,7 +19,12 @@ const WarrantySchema = new Schema({
     required: true,
     unique: true
   },
-  issueDetails: {
+   newSerialNo: {
+    type: String,
+    unique: true,
+    default: ""
+  },
+  fault: {
     type: String,
     required: true
   },
@@ -30,7 +36,17 @@ const WarrantySchema = new Schema({
     type: String,
     required: true
   },
+  supplier: {
+  type: String,
+  required: true
+},
   warrantyOutDate: {
+    type: Date
+  },
+   warrantyBackInDate: {
+    type: Date
+  },
+   deliveredToCustomerDate: {
     type: Date
   },
   description: {
@@ -38,6 +54,7 @@ const WarrantySchema = new Schema({
   },
   status: {
     type: String,
+    default: "Received from Customer"
   }
 },{collection: 'Warranty'});
 
