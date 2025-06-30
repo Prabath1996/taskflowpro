@@ -13,7 +13,10 @@ import { Outlet } from "react-router-dom";
 import Employees from "./pages/Dashboard/Employees/Employees";
 import Repair from "./pages/Dashboard/Repair/Repair";
 import Tasks from "./pages/Dashboard/Tasks/Tasks";
+import ResetPassword from "./components/ResetPassword/Resetpassword";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
+import Warranty from "./pages/Dashboard/Warranty/Warranty";
+import Suppliers from "./pages/Dashboard/Suppliers/Suppliers";
 
 const MyContext = createContext();
 function App() {
@@ -70,8 +73,11 @@ function App() {
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/customers" element={<ProtectedRoute><Customers/></ProtectedRoute>} />
            <Route path="/employees" element={<ProtectedRoute><Employees /></ProtectedRoute>} />
+           <Route path="/suppliers" element={<ProtectedRoute><Suppliers /></ProtectedRoute>} />
            <Route path="/repair" element={<ProtectedRoute><Repair /></ProtectedRoute>} />
            <Route path="/tasks" element={<ProtectedRoute><Tasks /></ProtectedRoute>} />
+           <Route path="/warranty" element={<ProtectedRoute><Warranty /></ProtectedRoute>} />
+           <Route path="/reset-password" element={<ProtectedRoute><ResetPassword /></ProtectedRoute>} />
         </Route>
       </Routes>
     </BrowserRouter>
