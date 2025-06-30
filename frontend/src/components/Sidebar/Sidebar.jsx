@@ -1,6 +1,6 @@
 import './Sidebar.css';
 import Button from "@mui/material/Button";
-import { MdDashboard } from "react-icons/md";
+import { MdDashboard, MdLocalShipping } from "react-icons/md";
 import { MdLock } from "react-icons/md";
 import { MdArrowForwardIos } from "react-icons/md";
 import { MdEngineering } from "react-icons/md";
@@ -116,43 +116,43 @@ const Sidebar = () => {
               </Button>
             </Link>
           </li>
-          <li>
-            <Button
-              className={`w-100 ${
-                activeTab === 4 && isToggleSubmenu === true ? "active" : ""
-              }`}
-              onClick={() => isOpenSubmenu(4)}
-            >
-              <span className="icon">
-                <IoShieldCheckmarkSharp />
-              </span>
-              <div className="icon-text">Warranty</div>
-              <span className="arrow">
-                <MdArrowForwardIos />
-              </span>
-            </Button>
-            <div
-              className={`submenuWrapper ${
-                activeTab === 4 && isToggleSubmenu === true
-                  ? "colapse"
-                  : "colapsed"
-              }`}
-            >
-              <ul className="submenu">
-                <li>
-                  <Link to="#">Warranty In</Link>
-                </li>
-                <li>
-                  <Link to="#">Warranty Out</Link>
-                </li>
-              </ul>
-            </div>
+           <li>
+            <Link to="/suppliers">
+              <Button
+                className={`w-100 ${activeTab === 4 ? "active" : ""}`}
+                onClick={() => isOpenSubmenu(4)}
+              >
+                <span className="icon">
+                  <MdLocalShipping />
+                </span>
+                <div className="icon-text">Suppliers</div>
+                <span className="arrow">
+                  <MdArrowForwardIos />
+                </span>
+              </Button>
+            </Link>
+          </li>
+           <li>
+            <Link to="/warranty">
+              <Button
+                className={`w-100 ${activeTab === 5 ? "active" : ""}`}
+                onClick={() => isOpenSubmenu(5)}
+              >
+                <span className="icon">
+                  <IoShieldCheckmarkSharp />
+                </span>
+                <div className="icon-text">Warranty</div>
+                <span className="arrow">
+                  <MdArrowForwardIos />
+                </span>
+              </Button>
+            </Link>
           </li>
           <li>
             <Link to="/repair">
               <Button
-                className={`w-100 ${activeTab === 5 ? "active" : ""}`}
-                onClick={() => isOpenSubmenu(5)}
+                className={`w-100 ${activeTab === 6 ? "active" : ""}`}
+                onClick={() => isOpenSubmenu(6)}
               >
                 <span className="icon">
                   <GiAutoRepair />
@@ -167,8 +167,8 @@ const Sidebar = () => {
           <li>
             <Link to="/tasks">
               <Button
-                className={`w-100 ${activeTab === 6 ? "active" : ""}`}
-                onClick={() => isOpenSubmenu(6)}
+                className={`w-100 ${activeTab === 7 ? "active" : ""}`}
+                onClick={() => isOpenSubmenu(7)}
               >
                 <span className="icon">
                   <FaTasks />
