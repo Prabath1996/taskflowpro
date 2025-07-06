@@ -12,7 +12,7 @@
 /build
 
 # Secret
-.env
+backend/.env
 
 # misc
 .DS_Store
