@@ -28,7 +28,7 @@ const Resetpassword = () => {
     try {
       const token = localStorage.getItem("authToken");
       const res = await axios.post(
-        "http://localhost:5000/api/users/reset-password",
+        "https://taskflowpro-exop.vercel.app/api/users/reset-password",
         { newPassword: form.newPassword },
         {
           headers: {
