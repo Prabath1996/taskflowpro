@@ -367,7 +367,7 @@ const Repair = () => {
         });
         return;
       }
-      await axios.post("http://localhost:5000/api/notify/send", {
+      await axios.post("https://taskflowpro-exop.vercel.app/api/notify/send", {
         to: email,
         subject: `Repair Completed: ${repair.itemName}`,
         text: `Dear ${repair.customerName},\n\nYour repair for ${repair.itemName} (Model: ${repair.modelNo}, Serial: ${repair.serialNo}) is completed and ready for pickup.\n\nThank you!`,
