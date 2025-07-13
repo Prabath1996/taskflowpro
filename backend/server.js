@@ -11,6 +11,7 @@ const warrantyRoutes = require('./routes/warranty');
 const repairRoutes = require('./routes/repair');
 const supplierRoutes = require('./routes/supplier');
 const taskRoutes = require('./routes/task');
+const sendmailRoutes = require('./routes/sendmail');
 const app = express();
 const port = (process.env.SERVER_PORT || 5000);
 
@@ -53,5 +54,6 @@ app.use('/api/warranty', warrantyRoutes);
 app.use('/api/repairs', repairRoutes);
 app.use('/api/suppliers', supplierRoutes);
 app.use('/api/tasks', taskRoutes);
+app.use('/api/notify', sendmailRoutes);
 
 
