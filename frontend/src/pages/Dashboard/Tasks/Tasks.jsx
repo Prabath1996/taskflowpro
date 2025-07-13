@@ -304,7 +304,7 @@ const Task = () => {
       customerName: task.customerName,
       location: task.location,
       startDate: task.startDate ? new Date(task.startDate) : new Date(),
-      assignTo: task.assignTo ? task.assignTo.split(", ") : [], // Convert comma-separated string to array
+      assignTo: task.assignTo ? task.assignTo.split(/\s*,\s*/).filter(Boolean) : [],
       siteName: task.siteName,
       endDate: task.endDate ? new Date(task.endDate) : null,
       description: task.description || "",

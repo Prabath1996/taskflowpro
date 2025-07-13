@@ -263,7 +263,7 @@ const Warranty = () => {
       itemName: warranty.itemName || "",
       modelNo: warranty.modelNo || "",
       serialNo: warranty.serialNo || "",
-      newSerialNo: warranty.newSerialNo || "", // <-- ensure this is always present
+      newSerialNo: warranty.newSerialNo || "",
       fault: warranty.fault || "",
       customerName: warranty.customerName || "",
       recievedBy: warranty.recievedBy || "",
@@ -395,6 +395,87 @@ const Warranty = () => {
         position: "top-right",
         style: { background: "#2563eb", color: "#fff" },
       });
+  };
+
+  //Handle sending warranty email
+  const handleSendWarrantyEmail = async (warranty) => {
+    try {
+      const customer =
+        customers.find((c) => c.customerName === warranty.customerName) || {};
+      const email = customer.email || warranty.email;
+      if (!email) {
+        toast.error("No customer email found!", {
+          position: "top-right",
+          style: { background: "#f44336", color: "#fff" },
+        });
+        return;
+      }
+      await axios.post("http://localhost:5000/api/notify/send", {
+        to: email,
+        subject: `Warranty Item Ready: ${warranty.itemName}`,
+        text: `Dear ${warranty.customerName},\n\nYour warranty item (${warranty.itemName}, Model: ${warranty.modelNo}, Serial: ${warranty.serialNo}) is ready for pickup.\n\nThank you!`,
+        html: `
+  <div style="font-family: Arial, sans-serif; background: #f4f6fb; padding: 32px;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px; margin: auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #e0e7ef;">
+      <tr>
+        <td style="padding: 24px 32px 16px 32px;">
+          <h1 style="color: #1976d2; margin-bottom: 0;">Warranty Item Ready!</h1>
+          <p style="font-size: 1.1em; color: #333; margin-top: 8px;">
+            Dear <b>${warranty.customerName}</b>,
+          </p>
+          <p style="color: #444;">
+            We are pleased to inform you that your warranty item is <span style="color: #388e3c; font-weight: bold;">ready for pickup</span>.
+          </p>
+          <table style="width: 100%; margin: 24px 0; border-collapse: collapse;">
+            <tr>
+              <td style="padding: 8px 0; color: #888;">Item Name:</td>
+              <td style="padding: 8px 0; color: #222;"><b>${warranty.itemName}</b></td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 0; color: #888;">Model No:</td>
+              <td style="padding: 8px 0; color: #222;">${warranty.modelNo}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 0; color: #888;">Serial No:</td>
+              <td style="padding: 8px 0; color: #222;">${warranty.serialNo}</td>
+            </tr>
+            ${
+              warranty.newSerialNo
+                ? `<tr>
+                    <td style="padding: 8px 0; color: #888;">New Serial No:</td>
+                    <td style="padding: 8px 0; color: #222;">${warranty.newSerialNo}</td>
+                  </tr>`
+                : ""
+            }
+            <tr>
+              <td style="padding: 8px 0; color: #888;">Fault:</td>
+              <td style="padding: 8px 0; color: #222;">${warranty.fault}</td>
+            </tr>
+             <tr>
+              <td style="padding: 8px 0; color: #888;">Repair Notes:</td>
+              <td style="padding: 8px 0; color: #222;">${warranty.repairNotes}</td>
+            </tr>
+          </table>
+          <p style="color: #888; font-size: 0.95em; margin-top: 32px;">
+            Thank you for choosing us for your warranty service.<br>
+            <b>MN Computers Team</b>
+          </p>
+        </td>
+      </tr>
+    </table>
+  </div>
+`,
+      });
+      toast.success("Email sent successfully!", {
+        position: "top-right",
+        style: { background: "#4caf50", color: "#fff" },
+      });
+    } catch (error) {
+      toast.error("Failed to send email.", {
+        position: "top-right",
+        style: { background: "#f44336", color: "#fff" },
+      });
+    }
   };
 
   const filteredWarranties = formData.filter(
@@ -637,6 +718,18 @@ const Warranty = () => {
             {isDeletingId === warranty._id ? "Deleting..." : "Delete"}
           </Button>
           {getActionButton(warranty)}
+          {warranty.status === "Ready for Customer" && (
+            <Button
+              size="small"
+              variant="contained"
+              color="primary"
+              startIcon={<FaPaperPlane />}
+              onClick={() => handleSendWarrantyEmail(warranty)}
+              sx={{ minWidth: "32px", padding: "4px 8px", fontSize: "0.75rem" }}
+            >
+              Send Email
+            </Button>
+          )}
         </Box>
       </Card>
     ));
@@ -667,10 +760,10 @@ const Warranty = () => {
             width: "100%",
             borderCollapse: "collapse",
             "& th, & td": {
-              padding: "8px", // Changed from "12px" to "8px"
+              padding: "8px",
               textAlign: "left",
               borderBottom: "1px solid #ddd",
-              fontSize: "0.875rem", // Add smaller font size
+              fontSize: "0.875rem",
             },
             "& th": {
               backgroundColor: "#f5f5f5",
@@ -755,7 +848,7 @@ const Warranty = () => {
                       variant="contained"
                       color="info"
                       size="small"
-                      sx={{ minWidth: "32px", padding: "4px 8px" }} // Add compact styling
+                      sx={{ minWidth: "32px", padding: "4px 8px" }}
                       startIcon={<FaEye />}
                     >
                       {!isTablet && "View"}
@@ -765,7 +858,7 @@ const Warranty = () => {
                       variant="contained"
                       color="success"
                       size="small"
-                      sx={{ minWidth: "32px", padding: "4px 8px" }} // Add compact styling
+                      sx={{ minWidth: "32px", padding: "4px 8px" }}
                       startIcon={<FaEdit />}
                     >
                       {!isTablet && "Edit"}
@@ -775,7 +868,7 @@ const Warranty = () => {
                       variant="outlined"
                       color="error"
                       size="small"
-                      sx={{ minWidth: "32px", padding: "4px 8px" }} // Add compact styling
+                      sx={{ minWidth: "32px", padding: "4px 8px" }}
                       startIcon={
                         isDeletingId === warranty._id ? (
                           <CircularProgress size={16} />
@@ -791,6 +884,23 @@ const Warranty = () => {
                           : "Delete")}
                     </Button>
                     {getActionButton(warranty)}
+
+                    {warranty.status === "Ready for Customer" && (
+                      <Button
+                        size="small"
+                        variant="contained"
+                        color="primary"
+                        startIcon={<FaPaperPlane />}
+                        onClick={() => handleSendWarrantyEmail(warranty)}
+                        sx={{
+                          minWidth: "32px",
+                          padding: "4px 8px",
+                          fontSize: "0.75rem",
+                        }}
+                      >
+                        {!isTablet && "Send Email"}
+                      </Button>
+                    )}
                   </Box>
                 </Box>
               </Box>

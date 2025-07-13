@@ -24,7 +24,7 @@ import {
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { FaTools, FaEdit, FaSearch, FaEye } from "react-icons/fa";
+import { FaTools, FaEdit, FaSearch, FaEye, FaPaperPlane } from "react-icons/fa";
 import { IoMdCloseCircle } from "react-icons/io";
 import { MdDelete } from "react-icons/md";
 import { GrFormPrevious, GrFormNext } from "react-icons/gr";
@@ -354,6 +354,89 @@ const Repair = () => {
     }
   };
 
+  // Handle sending repair email
+  const handleSendRepairEmail = async (repair) => {
+    try {
+      const customer =
+        customers.find((c) => c.customerName === repair.customerName) || {};
+      const email = customer.email;
+      if (!email) {
+        toast.error("No customer email found!", {
+          position: "top-right",
+          style: { background: "#f44336", color: "#fff" },
+        });
+        return;
+      }
+      await axios.post("http://localhost:5000/api/notify/send", {
+        to: email,
+        subject: `Repair Completed: ${repair.itemName}`,
+        text: `Dear ${repair.customerName},\n\nYour repair for ${repair.itemName} (Model: ${repair.modelNo}, Serial: ${repair.serialNo}) is completed and ready for pickup.\n\nThank you!`,
+        html: `
+  <div style="font-family: Arial, sans-serif; background: #f4f6fb; padding: 32px;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px; margin: auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #e0e7ef;">
+      <tr>
+        <td style="padding: 24px 32px 16px 32px;">
+          <h1 style="color: #1976d2; margin-bottom: 0;">Repair Completed!</h1>
+          <p style="font-size: 1.1em; color: #333; margin-top: 8px;">
+            Dear <b>${repair.customerName}</b>,
+          </p>
+          <p style="color: #444;">
+            We are pleased to inform you that your repair is <span style="color: #388e3c; font-weight: bold;">completed</span> and ready for pickup.
+          </p>
+          <table style="width: 100%; margin: 24px 0; border-collapse: collapse;">
+             <tr>
+              <td style="padding: 8px 0; color: #888;">Invoice No:</td>
+              <td style="padding: 8px 0; color: #222;">${repair.invNo}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 0; color: #888;">Item Name:</td>
+              <td style="padding: 8px 0; color: #222;"><b>${repair.itemName}</b></td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 0; color: #888;">Model No:</td>
+              <td style="padding: 8px 0; color: #222;">${repair.modelNo}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 0; color: #888;">Serial No:</td>
+              <td style="padding: 8px 0; color: #222;">${repair.serialNo}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 0; color: #888;">Fault:</td>
+              <td style="padding: 8px 0; color: #222;">${repair.fault}</td>
+            </tr> 
+          </table>
+          <p style="color: #888; font-size: 0.95em; margin-top: 32px;">
+            Thank you for trusting us with your repair.<br>
+            <b>MN Computers Team</b>
+          </p>
+          <hr style="border: none; border-top: 1px solid #e0e7ef; margin: 32px 0 16px 0;">
+          <div style="color: #888; font-size: 0.95em;">
+            <p style="margin: 0;">
+              <b>Need help?</b> Contact our support team:<br>
+              <a href="mailto:gallemncomputer@gmail.com" style="color: #1976d2;">gallemncomputer@gmail.com</a> | +1 (555) 123-4567
+            </p>
+            <p style="margin: 8px 0 0 0;">
+              <a href="https://yourcompany.com" style="color: #1976d2; text-decoration: none;">Visit our website</a>
+            </p>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+`,
+      });
+      toast.success("Email sent successfully!", {
+        position: "top-right",
+        style: { background: "#4caf50", color: "#fff" },
+      });
+    } catch (error) {
+      toast.error("Failed to send email.", {
+        position: "top-right",
+        style: { background: "#f44336", color: "#fff" },
+      });
+    }
+  };
+
   // Search state
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredRepairs, setFilteredRepairs] = useState([]);
@@ -509,6 +592,18 @@ const Repair = () => {
           >
             {isDeletingId === repair._id ? "Deleting..." : "Delete"}
           </Button>
+          {repair.status === "Completed" && (
+            <Button
+              size="small"
+              variant="contained"
+              color="primary"
+              startIcon={<FaPaperPlane />}
+              onClick={() => handleSendRepairEmail(repair)}
+              sx={{ minWidth: "32px", padding: "4px 8px", fontSize: "0.75rem" }}
+            >
+              Send Email
+            </Button>
+          )}
         </Box>
       </Card>
     ));
@@ -647,6 +742,23 @@ const Repair = () => {
                               ? "Deleting..."
                               : "Delete")}
                         </Button>
+                        {repair.status === "Completed" && (
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            startIcon={<FaPaperPlane />}
+                            size="small"
+                            sx={{
+                              minWidth: 0,
+                              padding: "2px 6px",
+                              fontSize: "0.8rem",
+                              mr: 0.5,
+                            }}
+                            onClick={() => handleSendRepairEmail(repair)}
+                          >
+                            {!isTablet && "Send Email"}
+                          </Button>
+                        )}
                       </div>
                     </td>
                   </tr>
