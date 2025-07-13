@@ -413,7 +413,7 @@ const Repair = () => {
           <div style="color: #888; font-size: 0.95em;">
             <p style="margin: 0;">
               <b>Need help?</b> Contact our support team:<br>
-              <a href="mailto:gallemncomputer@gmail.com" style="color: #1976d2;">gallemncomputer@gmail.com</a> | +1 (555) 123-4567
+              <a href="mailto:gallemncomputer@gmail.com" style="color: #1976d2;">gallemncomputer@gmail.com</a> | +94 (076) 4199700
             </p>
             <p style="margin: 8px 0 0 0;">
               <a href="https://yourcompany.com" style="color: #1976d2; text-decoration: none;">Visit our website</a>

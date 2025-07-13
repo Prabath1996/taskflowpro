@@ -184,6 +184,7 @@ const Warranty = () => {
       deliveredToCustomerDate: data.deliveredToCustomerDate
         ? data.deliveredToCustomerDate.toISOString().split("T")[0]
         : null,
+      repairNotes: data.repairNotes,
     };
 
     try {
@@ -460,6 +461,16 @@ const Warranty = () => {
             Thank you for choosing us for your warranty service.<br>
             <b>MN Computers Team</b>
           </p>
+          <hr style="border: none; border-top: 1px solid #e0e7ef; margin: 32px 0 16px 0;">
+          <div style="color: #888; font-size: 0.95em;">
+            <p style="margin: 0;">
+              <b>Need help?</b> Contact our support team:<br>
+              <a href="mailto:gallemncomputer@gmail.com" style="color: #1976d2;">gallemncomputer@gmail.com</a> | +94 (076) 4199700
+            </p>
+            <p style="margin: 8px 0 0 0;">
+              <a href="https://yourcompany.com" style="color: #1976d2; text-decoration: none;">Visit our website</a>
+            </p>
+          </div>
         </td>
       </tr>
     </table>
