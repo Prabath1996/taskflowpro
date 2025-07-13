@@ -52,6 +52,9 @@ const WarrantySchema = new Schema({
   description: {
     type: String
   },
+  repairNotes: {
+    type: String,
+  },
   status: {
     type: String,
     default: "Received from Customer"
