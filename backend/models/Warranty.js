@@ -21,8 +21,7 @@ const WarrantySchema = new Schema({
   },
    newSerialNo: {
     type: String,
-    unique: true,
-    default: ""
+    default: null
   },
   fault: {
     type: String,

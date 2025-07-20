@@ -18,25 +18,24 @@ router.post("/addSupplier", async (req, res) => {
      const supplier = new Supplier(req.body);
     // Validate required fields
     if (!supplier.supplierName) {
-      return res.json({
+      return res.status(400).json({
         error: "Supplier Name is required",
       });
     }
     if (!supplier.address) {
-      return res.json({
+      return res.status(400).json({
         error: "Address is required",
       });
     }
-    // Validate phone number
     if (!supplier.phoneNo) {
-      return res.json({
+      return res.status(400).json({
         error: "Phone number is required",
       });
     }
    // Phone number format validation
       const phoneRegex = /^(07|09)\d{8}$/;
       if (!phoneRegex.test(supplier.phoneNo)) {
-        return res.json({
+        return res.status(400).json({
           error:
             "Invalid phone number format. Must be 10 digits and start with 07 or 09",
         });
@@ -46,27 +45,27 @@ router.post("/addSupplier", async (req, res) => {
         phoneNo: supplier.phoneNo,
       });
       if (existingSupplierPhoneNo) {
-        return res.json({
+        return res.status(409).json({
           error: "Phone number already exists.",
         });
       }
     //Validate Email
     if (!supplier.email) {
-      return res.json({
+      return res.status(400).json({
         error: "Email is required",
       });
     }
     // Email format validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(supplier.email)) {
-      return res.json({
+      return res.status(400).json({
         error: "Invalid email format",
       });
     }
     // Check for duplicate email
     const existingSupplierEmail = await Supplier.findOne({ email: supplier.email });
     if (existingSupplierEmail) {
-      return res.json({
+      return res.status(409).json({
         error: "Email already exists",
       });
     }
@@ -77,6 +76,7 @@ router.post("/addSupplier", async (req, res) => {
     res.json(supplier);
   } catch (error) {
     console.log(error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 

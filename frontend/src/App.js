@@ -23,7 +23,6 @@ function App() {
   
 
    const [isTogglesidebar, setIsToggleSidebar] = useState(false);
-      // const [isLogin, setIsLogin] = useState(faslse);
   const [windowWidth,setWindowWidth] = useState(window.innerWidth);
     
   useEffect(() => {

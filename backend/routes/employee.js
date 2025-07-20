@@ -18,20 +18,19 @@ router.post("/addEmployees", async (req, res) => {
     const employee = new Employee(req.body);
     // Validate required fields
     if (!employee.employeeName) {
-      return res.json({
+      return res.status(400).json({
         error: "Employee Name is required",
       });
     }
-    // Validate phone number
     if (!employee.phoneNo) {
-      return res.json({
+      return res.status(400).json({
         error: "Phone number is required",
       });
     }
     // Phone number format validation
     const phoneRegex = /^(07|09)\d{8}$/;
     if (!phoneRegex.test(employee.phoneNo)) {
-      return res.json({
+      return res.status(400).json({
         error:
           "Invalid phone number format. Must be 10 digits and start with 07 or 09",
       });
@@ -41,19 +40,19 @@ router.post("/addEmployees", async (req, res) => {
       phoneNo: employee.phoneNo,
     });
     if (existingEmployee) {
-      return res.json({
+      return res.status(409).json({
         error: "Phone number already exists.",
       });
     }
     // Validate designation
     if (!employee.designation) {
-      return res.json({
+      return res.status(400).json({
         error: "Designation is required",
       });
     }
     // Validate joinedDate
     if (!employee.joinedDate) {
-      return res.json({
+      return res.status(400).json({
         error: "Joined Date is required",
       });
     }
@@ -63,6 +62,7 @@ router.post("/addEmployees", async (req, res) => {
     res.json(employee);
   } catch (error) {
     console.log(error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
