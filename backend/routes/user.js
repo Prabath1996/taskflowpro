@@ -21,20 +21,18 @@ router.post("/signup", async (req, res) => {
     const { username, email, password } = req.body;
     //Check if username was entered
     if (!username) {
-      return res.json({
+      return res.status(400).json({
         error: "Name is Required",
       });
     }
     //Check if email was entered
     if (!email) {
-      return res.json({
-        error: "Email is Required",
-      });
+      return res.status(400).json({ error: "Email is Required" });
     }
     // Email format validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      return res.json({
+      return res.status(400).json({
         error: "Invalid email format",
       });
     }
@@ -42,7 +40,7 @@ router.post("/signup", async (req, res) => {
     const strongPasswordRegex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
     if (!password || !strongPasswordRegex.test(password)) {
-      return res.json({
+      return res.status(400).json({
         error:
           "Password must be at least 6 characters long and include uppercase, lowercase, number, and special character.",
       });
@@ -51,7 +49,7 @@ router.post("/signup", async (req, res) => {
     const exist = await User.findOne({ email });
     //Check if username was entered
     if (exist) {
-      return res.json({
+      return res.status(409).json({
         error: "Email is taken already",
       });
     }
@@ -73,6 +71,7 @@ router.post("/signup", async (req, res) => {
     });
   } catch (error) {
     console.log(error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
@@ -82,14 +81,14 @@ router.post("/login", async (req, res) => {
     const { email, password } = req.body;
 
     if (!email) {
-      return res.json({ error: "Email is Required" });
+      return res.status(400).json({ error: "Email is Required" });
     }
     const user = await User.findOne({ email });
     if (!user) {
-      return res.json({ error: "No user found" });
+      return res.status(404).json({ error: "No user found" });
     }
     if (!password) {
-      return res.json({ error: "Password is Required" });
+      return res.status(400).json({ error: "Password is Required" });
     }
     const match = await bcrypt.compare(password, user.password);
     if (match) {
@@ -114,7 +113,7 @@ router.post("/login", async (req, res) => {
         },
       });
     } else {
-      return res.json({ error: "Password does not match" });
+      return res.status(401).json({ error: "Password does not match" });
     }
   } catch (error) {
     console.log(error);
@@ -130,7 +129,7 @@ router.post("/reset-password", auth, async (req, res) => {
 
     // Check if new password was entered
     if (!newPassword) {
-      return res.json({
+      return res.status(400).json({
         error: "New Password is Required",
       });
     }
@@ -139,14 +138,14 @@ router.post("/reset-password", auth, async (req, res) => {
     const strongPasswordRegex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
     if (!strongPasswordRegex.test(newPassword)) {
-      return res.json({
+      return res.status(400).json({
         error:
           "Password must be at least 6 characters long and include uppercase, lowercase, number, and special character.",
       });
     }
     // Check if user exists
     const user = await User.findById(userId);
-    if (!user) return res.json({ error: "User not found" });
+    if (!user) return res.status(404).json({ error: "User not found" });
 
     // Hash the new password
     user.password = await bcrypt.hash(newPassword, 10);

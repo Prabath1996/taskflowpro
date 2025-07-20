@@ -17,34 +17,39 @@ router.post('/addRepairs', async (req, res) => {
   try {
    const repair = new Repair(req.body);
        // Validate required fields
+       if (!repair.invNo) {
+         return res.status(400).json({
+           error: 'Invoice Number is required'
+         });
+       }
        if (!repair.itemName) {
-         return res.json({
+         return res.status(400).json({
            error: 'Item Name is required'
          });
        }
-        if (!repair.modelNo) {
-         return res.json({
+       if (!repair.modelNo) {
+         return res.status(400).json({
            error: 'Model No is required'
          });
        }
        if (!repair.serialNo) {
-         return res.json({ 
+         return res.status(400).json({ 
            error: 'Serial No is required' 
          });
        }
        if (!repair.fault) {
-         return res.json({ 
+         return res.status(400).json({ 
            error: 'Fault Description is required' 
          });
        }
        if (!repair.customerName) {
-         return res.json({ 
+         return res.status(400).json({ 
            error: 'Customer field is required' 
          });
        }
        if (!repair.receivedBy) {
-         return res.json({ 
-           error: 'Recieved By field is required' 
+         return res.status(400).json({ 
+           error: 'Received By field is required' 
          });
        }
 
@@ -55,7 +60,7 @@ router.post('/addRepairs', async (req, res) => {
 
   } catch (error) {
     console.log(error);
-    
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
