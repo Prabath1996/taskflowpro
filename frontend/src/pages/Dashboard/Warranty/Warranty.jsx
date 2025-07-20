@@ -411,7 +411,7 @@ const Warranty = () => {
         });
         return;
       }
-      await axios.post("https://taskflowpro-exop.vercel.app/api/notify/send", {
+      await axios.post("http://localhost:5000/api/notify/send", {
         to: email,
         subject: `Warranty Item Ready: ${warranty.itemName}`,
         text: `Dear ${warranty.customerName},\n\nYour warranty item (${warranty.itemName}, Model: ${warranty.modelNo}, Serial: ${warranty.serialNo}) is ready for pickup.\n\nThank you!`,
