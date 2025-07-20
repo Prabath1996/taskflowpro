@@ -83,7 +83,7 @@ router.post("/send", async (req, res) => {
   }
 });
 
-// Simple debug endpoint to check email configuration
+// debug endpoint to check email configuration
 router.get("/test", (req, res) => {
   res.json({
     emailConfigured: !!(process.env.EMAIL_USER && process.env.EMAIL_PASS),
