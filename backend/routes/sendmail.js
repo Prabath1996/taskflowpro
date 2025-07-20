@@ -37,6 +37,15 @@ router.post("/send", async (req, res) => {
       });
     }
 
+    // Check if email credentials are available
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+      console.error("Email credentials not configured");
+      return res.status(500).json({ 
+        success: false, 
+        error: "Email service not configured. Please contact administrator." 
+      });
+    }
+
     // Configure transporter
     const transporter = nodemailer.createTransporter({
       service: "gmail",
@@ -44,20 +53,41 @@ router.post("/send", async (req, res) => {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
       },
+      // Add timeout and connection settings
+      connectionTimeout: 60000,
+      greetingTimeout: 30000,
+      socketTimeout: 60000,
     });
 
     // Verify transporter configuration
-    await transporter.verify();
+    try {
+      await transporter.verify();
+      console.log("Email transporter verified successfully");
+    } catch (verifyError) {
+      console.error("Email transporter verification failed:", verifyError);
+      return res.status(500).json({ 
+        success: false, 
+        error: "Email service configuration error. Please check credentials." 
+      });
+    }
 
-    await transporter.sendMail({
+    // Send email
+    const mailOptions = {
       from: process.env.EMAIL_USER,
       to,
       subject,
       text,
       html,
-    });
+    };
 
-    res.json({ success: true, message: "Email sent successfully" });
+    const result = await transporter.sendMail(mailOptions);
+    console.log("Email sent successfully:", result.messageId);
+
+    res.json({ 
+      success: true, 
+      message: "Email sent successfully",
+      messageId: result.messageId 
+    });
   } catch (error) {
     console.error("Email send error:", error);
     
@@ -65,20 +95,44 @@ router.post("/send", async (req, res) => {
     if (error.code === 'EAUTH') {
       return res.status(500).json({ 
         success: false, 
-        error: "Email authentication failed. Please check your email credentials." 
+        error: "Email authentication failed. Please check your email credentials and ensure you're using an App Password." 
       });
     }
     
     if (error.code === 'ECONNECTION') {
       return res.status(500).json({ 
         success: false, 
-        error: "Failed to connect to email service. Please try again later." 
+        error: "Failed to connect to email service. Please check your internet connection and try again." 
+      });
+    }
+
+    if (error.code === 'ETIMEDOUT') {
+      return res.status(500).json({ 
+        success: false, 
+        error: "Email service timeout. Please try again later." 
+      });
+    }
+
+    if (error.code === 'EAUTHREQUIRED') {
+      return res.status(500).json({ 
+        success: false, 
+        error: "Email authentication required. Please check your Gmail settings and App Password." 
       });
     }
     
+    // Log the full error for debugging
+    console.error("Full email error details:", {
+      code: error.code,
+      command: error.command,
+      response: error.response,
+      responseCode: error.responseCode,
+      message: error.message
+    });
+    
     res.status(500).json({ 
       success: false, 
-      error: "Failed to send email. Please try again later." 
+      error: "Failed to send email. Please try again later.",
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
