@@ -55,7 +55,12 @@ const Signup = () => {
           style: { background: "#f44336", color: "#fff" },
         });
       } else {
-        setData({});
+        setData({
+          username: "",
+          email: "",
+          password: "",
+          confirmPassword: "",
+        });
         toast.success("User Registration Successful", {
           position: "top-right",
           style: { background: "#4caf50", color: "#fff" },
@@ -63,7 +68,13 @@ const Signup = () => {
         navigate("/login");
       }
     } catch (error) {
-      console.log(error);
+      toast.error(
+        error?.response?.data?.error || "Server error. Please try again.",
+        {
+          position: "top-right",
+          style: { background: "#f44336", color: "#fff" },
+        }
+      );
     }
   };
 

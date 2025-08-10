@@ -36,6 +36,17 @@ router.post("/signup", async (req, res) => {
         error: "Invalid email format",
       });
     }
+    //Check Email
+    const exist = await User.findOne({ email });
+    //Check if username was entered
+    if (exist) {
+      return res.status(409).json({
+        error: "Email is taken already",
+      });
+    }
+ if (!password) {
+      return res.status(400).json({ error: "Password is Required" });
+    }
     //Password validation
     const strongPasswordRegex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
@@ -45,15 +56,6 @@ router.post("/signup", async (req, res) => {
           "Password must be at least 6 characters long and include uppercase, lowercase, number, and special character.",
       });
     }
-    //Check Email
-    const exist = await User.findOne({ email });
-    //Check if username was entered
-    if (exist) {
-      return res.status(409).json({
-        error: "Email is taken already",
-      });
-    }
-
     //Encrypt the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -83,12 +85,28 @@ router.post("/login", async (req, res) => {
     if (!email) {
       return res.status(400).json({ error: "Email is Required" });
     }
+    // Email format validation
+    const emailRegEx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegEx.test(email)) {
+      return res.status(400).json({
+        error: "Invalid email format",
+      });
+    }
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json({ error: "No user found" });
     }
     if (!password) {
       return res.status(400).json({ error: "Password is Required" });
+    }
+    //Password validation
+    const strongPasswordRegEx =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+    if (!password || !strongPasswordRegEx.test(password)) {
+      return res.status(400).json({
+        error:
+          "Password must be at least 6 characters long and include uppercase, lowercase, number, and special character.",
+      });
     }
     const match = await bcrypt.compare(password, user.password);
     if (match) {
@@ -113,7 +131,9 @@ router.post("/login", async (req, res) => {
         },
       });
     } else {
-      return res.status(401).json({ error: "Password does not match" });
+      return res
+        .status(401)
+        .json({ error: "Incorrect password. Please try again." });
     }
   } catch (error) {
     console.log(error);
