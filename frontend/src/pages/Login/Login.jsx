@@ -23,52 +23,55 @@ const Login = () => {
 
   const [data, setData] = useState({ email: "", password: "" });
 
-const handleLogin = async (e) => {
-  e.preventDefault();
-  const { email, password } = data;
-  try {
-    const { data } = await axios.post(
-      "https://taskflowpro-exop.vercel.app/api/users/login",
-      { email, password }
-    );
-    console.log("Login response:", data); // Debug line
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    const { email, password } = data;
+    try {
+      const { data } = await axios.post(
+        "https://taskflowpro-exop.vercel.app/api/users/login",
+        { email, password }
+      );
+      console.log("Login response:", data); // Debug line
 
-    if (data.error) {
-      toast.error(data.error, {
-        position: "top-right",
-        style: { background: "#f44336", color: "#fff" },
-      });
-    } else if (data.success && data.token) {
-      localStorage.setItem("authToken", data.token);
+      if (data.error) {
+        toast.error(data.error, {
+          position: "top-right",
+          style: { background: "#f44336", color: "#fff" },
+        });
+      } else if (data.success && data.token) {
+        localStorage.setItem("authToken", data.token);
 
-      SessionManager.setUserSession({
-        email: data.user.email,
-        name: data.user.username || data.user.email.split("@")[0],
-        userId: data.user._id,
-        token: data.token,
-        ...data.user,
-      });
+        SessionManager.setUserSession({
+          email: data.user.email,
+          name: data.user.username || data.user.email.split("@")[0],
+          userId: data.user._id,
+          token: data.token,
+          ...data.user,
+        });
 
-      setData({ email: "", password: "" });
-      toast.success("Login Successful. Welcome!", {
-        position: "top-center",
-        style: { background: "#4caf50", color: "#fff" },
-      });
-      navigate("/dashboard");
-    } else {
-      toast.error("Unexpected error. Please try again.", {
-        position: "top-right",
-        style: { background: "#f44336", color: "#fff" },
-      });
+        setData({ email: "", password: "" });
+        toast.success("Login Successful. Welcome!", {
+          position: "top-center",
+          style: { background: "#4caf50", color: "#fff" },
+        });
+        navigate("/dashboard");
+      } else {
+        toast.error("Unexpected error. Please try again.", {
+          position: "top-right",
+          style: { background: "#f44336", color: "#fff" },
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(
+        error?.response?.data?.error || "Server error. Please try again.",
+        {
+          position: "top-right",
+          style: { background: "#f44336", color: "#fff" },
+        }
+      );
     }
-  } catch (error) {
-    console.error(error);
-    toast.error("Server error. Please try again.", {
-        position: "top-right",
-        style: { background: "#f44336", color: "#fff" },
-      });
-  }
-};
+  };
 
   return (
     <>
