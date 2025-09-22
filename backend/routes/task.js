@@ -31,12 +31,7 @@ router.post('/addTasks', async (req, res) => {
         return res.status(400).json({
           error: 'Location is required'
         });
-      }
-      if (!task.assignedTo || typeof task.assignedTo !== "string" || task.assignedTo.trim() === "") {
-        return res.status(400).json({
-          error: 'Assigned To is required'
-        });
-      }
+      }     
     // Save the task record
     await task.save();
     // Return the created task record
