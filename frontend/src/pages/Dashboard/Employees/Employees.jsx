@@ -196,11 +196,13 @@ const Employees = () => {
         }
       }
     } catch (error) {
-      console.log(error);
-      toast.error("Operation failed", {
-        position: "top-right",
-        style: { background: "#f44336", color: "#fff" },
-      });
+      toast.error(
+        error?.response?.data?.error || "Operation failed",
+        {
+          position: "top-right",
+          style: { background: "#f44336", color: "#fff" },
+        }
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -259,11 +261,13 @@ const Employees = () => {
           });
         }
       } catch (error) {
-        console.log(error);
-        toast.error("Failed to delete Employee", {
-          position: "top-right",
-          style: { background: "#f44336", color: "#fff" },
-        });
+        toast.error(
+          error?.response?.data?.error || "Failed to delete Employee",
+          {
+            position: "top-right",
+            style: { background: "#f44336", color: "#fff" },
+          }
+        );
       } finally {
         setIsDeletingId(null);
       }

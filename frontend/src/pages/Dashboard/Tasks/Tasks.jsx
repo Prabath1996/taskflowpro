@@ -269,11 +269,13 @@ const Task = () => {
         }
       }
     } catch (error) {
-      console.log(error);
-      toast.error("Operation failed", {
-        position: "top-right",
-        style: { background: "#f44336", color: "#fff" },
-      });
+      toast.error(
+        error?.response?.data?.error || "Operation failed",
+        {
+          position: "top-right",
+          style: { background: "#f44336", color: "#fff" },
+        }
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -345,11 +347,13 @@ const Task = () => {
           });
         }
       } catch (error) {
-        console.log(error);
-        toast.error("Failed to delete task", {
-          position: "top-right",
-          style: { background: "#f44336", color: "#fff" },
-        });
+        toast.error(
+          error?.response?.data?.error || "Failed to delete task",
+          {
+            position: "top-right",
+            style: { background: "#f44336", color: "#fff" },
+          }
+        );
       } finally {
         setIsDeletingId(null);
       }
@@ -741,7 +745,6 @@ const Task = () => {
                       label="Customer"
                       margin="normal"
                       size="small"
-                      required
                       disabled={isSubmitting}
                       fullWidth
                     />

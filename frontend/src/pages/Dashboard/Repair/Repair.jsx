@@ -263,11 +263,13 @@ const Repair = () => {
         }
       }
     } catch (error) {
-      console.log(error);
-      toast.error("Operation failed", {
-        position: "top-right",
-        style: { background: "#f44336", color: "#fff" },
-      });
+      toast.error(
+        error?.response?.data?.error || "Operation failed",
+        {
+          position: "top-right",
+          style: { background: "#f44336", color: "#fff" },
+        }
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -343,11 +345,13 @@ const Repair = () => {
           });
         }
       } catch (error) {
-        console.log(error);
-        toast.error("Failed to delete repair record", {
-          position: "top-right",
-          style: { background: "#f44336", color: "#fff" },
-        });
+        toast.error(
+          error?.response?.data?.error || "Failed to delete repair record",
+          {
+            position: "top-right",
+            style: { background: "#f44336", color: "#fff" },
+          }
+        );
       } finally {
         setIsDeletingId(null);
       }
@@ -430,10 +434,13 @@ const Repair = () => {
         style: { background: "#4caf50", color: "#fff" },
       });
     } catch (error) {
-      toast.error("Failed to send email.", {
-        position: "top-right",
-        style: { background: "#f44336", color: "#fff" },
-      });
+      toast.error(
+        error?.response?.data?.error || "Failed to send email.",
+        {
+          position: "top-right",
+          style: { background: "#f44336", color: "#fff" },
+        }
+      );
     }
   };
 
@@ -838,7 +845,7 @@ const Repair = () => {
               <form onSubmit={handleAddRepair}>
                 <TextField
                   size="small"
-                  autoFocus
+                  autoFocus={true}
                   type="text"
                   value={data.invNo}
                   onChange={(e) => setData({ ...data, invNo: e.target.value })}
@@ -922,7 +929,6 @@ const Repair = () => {
                       label="Customer"
                       margin="normal"
                       size="small"
-                      required
                       disabled={isSubmitting}
                       fullWidth
                     />
@@ -950,7 +956,6 @@ const Repair = () => {
                       label="Received By"
                       margin="normal"
                       size="small"
-                      required
                       disabled={isSubmitting}
                       fullWidth
                     />

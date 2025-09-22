@@ -152,13 +152,15 @@ const Supplier = () => {
         }
       }
     } catch (error) {
-      console.log(error)
-      toast.error("Operation failed", {
-        position: "top-right",
-        style: { background: "#f44336", color: "#fff" },
-      })
+      toast.error(
+        error?.response?.data?.error || "Operation failed",
+        {
+          position: "top-right",
+          style: { background: "#f44336", color: "#fff" },
+        }
+      );
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
   }
 
@@ -212,13 +214,15 @@ const Supplier = () => {
           })
         }
       } catch (error) {
-        console.log(error)
-        toast.error("Failed to delete supplier", {
-          position: "top-right",
-          style: { background: "#f44336", color: "#fff" },
-        })
+        toast.error(
+          error?.response?.data?.error || "Failed to delete supplier",
+          {
+            position: "top-right",
+            style: { background: "#f44336", color: "#fff" },
+          }
+        );
       } finally {
-        setIsDeletingId(null)
+        setIsDeletingId(null);
       }
     }
   }
@@ -463,7 +467,6 @@ const Supplier = () => {
                 variant="outlined"
                 fullWidth
                 margin="normal"
-                required
                 disabled={isSubmitting}
               />
 
@@ -476,7 +479,6 @@ const Supplier = () => {
                 variant="outlined"
                 fullWidth
                 margin="normal"
-                required
                 multiline
                 rows={3}
                 disabled={isSubmitting}
@@ -491,7 +493,6 @@ const Supplier = () => {
                 variant="outlined"
                 fullWidth
                 margin="normal"
-                required
                 disabled={isSubmitting}
               />
 
@@ -504,7 +505,6 @@ const Supplier = () => {
                 variant="outlined"
                 fullWidth
                 margin="normal"
-                required
                 disabled={isSubmitting}
               />
 
