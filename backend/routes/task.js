@@ -16,10 +16,33 @@ router.get('/getTasks', async (req, res) => {
 router.post('/addTasks', async (req, res) => {
   try {
     const task = new Task(req.body);
+      // Validate required fields
+      if (!task.taskName) {
+        return res.status(400).json({
+          error: 'Task Name is required'
+        });
+      }
+      if (!task.customerName) {
+        return res.status(400).json({
+          error: 'Customer Name is required'
+        });
+      }
+      if (!task.location) {
+        return res.status(400).json({
+          error: 'Location is required'
+        });
+      }
+      if (!task.assignedTo) {
+        return res.status(400).json({
+          error: 'Assigned To field is required'
+        });
+      }
+    // Save the task record
     await task.save();
-    res.status(201).json(task);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
+    // Return the created task record
+    res.json(task);
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
