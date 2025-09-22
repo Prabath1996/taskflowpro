@@ -87,77 +87,46 @@ const Customers = () => {
 
     try {
       if (editMode && selectedCustomer) {
-        // Update existing customer
-        const response = await axios.put(
-          `https://taskflowpro-exop.vercel.app/api/customers/updateCustomers/${selectedCustomer._id}`,
-          {
-            customerName,
-            email,
-            address,
-            phoneNo,
-          }
+        toast.success("Customer Updated Successfully", {
+          position: "top-right",
+          style: { background: "#4caf50", color: "#fff" },
+        });
+        setFormData((prev) =>
+          prev.map((customer) =>
+            customer._id === selectedCustomer._id
+              ? { ...customer, customerName, email, address, phoneNo }
+              : customer
+          )
         );
-
-        if (response.data.error) {
-          toast.error(response.data.error, {
-            position: "top-right",
-            style: { background: "#f44336", color: "#fff" },
-          });
-        } else {
-          // Update the customer in the local state
-          setFormData((prev) =>
-            prev.map((customer) =>
-              customer._id === selectedCustomer._id
-                ? { ...customer, customerName, email, address, phoneNo }
-                : customer
-            )
-          );
-          toast.success("Customer Updated Successfully", {
-            position: "top-right",
-            style: { background: "#4caf50", color: "#fff" },
-          });
-          handleClose();
-          resetForm();
-        }
+        handleClose();
+        resetForm();
       } else {
-        // Add new customer
-        const { data: responseData } = await axios.post(
+        const response = await axios.post(
           "https://taskflowpro-exop.vercel.app/api/customers/addCustomers",
-          {
-            customerName,
-            email,
-            address,
-            phoneNo,
-          }
+          { customerName, email, address, phoneNo }
         );
-
-        if (responseData.error) {
-          toast.error(responseData.error, {
-            position: "top-right",
-            style: { background: "#f44336", color: "#fff" },
-          });
-        } else {
-          setData({
-            customerName: "",
-            email: "",
-            address: "",
-            phoneNo: "",
-          });
-          toast.success("Customer Added Successfully", {
-            position: "top-right",
-            style: { background: "#4caf50", color: "#fff" },
-          });
-          setFormData((prev) => [...prev, responseData]);
-          handleClose();
-          resetForm();
-        }
+        toast.success("Customer Added Successfully", {
+          position: "top-right",
+          style: { background: "#4caf50", color: "#fff" },
+        });
+        setFormData((prev) => [...prev, response.data]);
+        setData({
+          customerName: "",
+          email: "",
+          address: "",
+          phoneNo: "",
+        });
+        handleClose();
+        resetForm();
       }
     } catch (error) {
-      console.log(error);
-      toast.error("Operation failed", {
-        position: "top-right",
-        style: { background: "#f44336", color: "#fff" },
-      });
+      toast.error(
+        error?.response?.data?.error || "Operation failed",
+        {
+          position: "top-right",
+          style: { background: "#f44336", color: "#fff" },
+        }
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -216,10 +185,13 @@ const Customers = () => {
         }
       } catch (error) {
         console.log(error);
-        toast.error("Failed to Delete customer", {
-          position: "top-right",
-          style: { background: "#f44336", color: "#fff" },
-        });
+        toast.error(
+          error?.response?.data?.error || "Failed to Delete customer",
+          {
+            position: "top-right",
+            style: { background: "#f44336", color: "#fff" },
+          }
+        );
       } finally {
         setIsDeletingId(null);
       }
